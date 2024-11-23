@@ -1,0 +1,2 @@
+List all python dependencies in the requirements.txt file. 
+This file is used by the Heroku platform to install all the dependencies when the application is deployed.

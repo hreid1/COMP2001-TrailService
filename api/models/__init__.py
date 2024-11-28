@@ -1,4 +1,4 @@
-from .trail import Trail, TrailSchema
+from .trail import Trail, trai
 from .location import Location
 from .routetype import RouteType
 from .difficulty import Difficulty

@@ -20,10 +20,12 @@ class Trail(db.Model):
     trailElevationGain = db.Column(db.Numeric(6, 2))
     averageTimeToComplete = db.Column(db.Numeric(5, 2))
     ownerID = db.Column(db.Integer, db.ForeignKey('owner.ownerID'))
-    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    timestamp = db.Column(
+        db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
+        onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
+    )
 
-class TrailSchema(SQLAlchemyAutoSchema):
+class TrailSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Trail
         load_instance = True
@@ -40,8 +42,7 @@ class TrailSchema(SQLAlchemyAutoSchema):
     trailElevationGain = fields.Decimal(as_string=True)
     averageTimeToComplete = fields.Decimal(as_string=True)
     ownerID = fields.Integer()
-    created_at = fields.DateTime(dump_only=True)
-    updated_at = fields.DateTime(dump_only=True)
+    timestamp = fields.DateTime()
 
 trail_schema = TrailSchema()
 trails_schema = TrailSchema(many=True)

@@ -1,52 +1,69 @@
-from flask import abort, make_response
-from api.database.config import db
+from flask import abort, make_response, jsonify, request
+from database import db
 from models import RouteType, route_type_schema, route_types_schema
 
 # Get all route types
 def read_all():
-    routetypes = RouteType.query.all()
-    return route_types_schema.dump(routetypes)  # Correct schema to handle multiple items
-
-# Create a new route type
-def create(routetype):
-    routeTypeName = routetype.get("routeTypeName")
-    if not routeTypeName:
-        abort(400, description="Route Type Name is required")
-
-    existing_routetype = RouteType.query.filter(RouteType.routeTypeName == routeTypeName).one_or_none()
-    if existing_routetype is None:
-        new_routetype = RouteType(routeTypeName=routeTypeName)
-        db.session.add(new_routetype)
-        db.session.commit()
-        return route_type_schema.dump(new_routetype), 201  # Return created route type
-    else:
-        abort(409, f'RouteType {routeTypeName} already exists')
+    route_types = RouteType.query.order_by(RouteType.routeTypeName).all()
+    return route_types_schema.dump(route_types)
 
 # Get one route type by ID
-def read_one(routeTypeID):
-    routetype = RouteType.query.filter(RouteType.routeTypeID == routeTypeID).one_or_none()
-    if routetype:
-        return route_type_schema.dump(routetype)
+def read_one(route_type_id):
+    route_type = RouteType.query.filter(RouteType.routeTypeID == route_type_id).one_or_none()
+    if route_type:
+        return route_type_schema.dump(route_type)
     else:
-        abort(404, f'RouteType not found for Id: {routeTypeID}')
+        abort(404, description=f'RouteType not found for Id: {route_type_id}')
+
+# Create a new route type
+def create():
+    route_type_data = request.get_json()
+    routeTypeName = route_type_data.get('routeTypeName')
+    
+    if not routeTypeName:
+        abort(400, description='Route type name is required')
+
+    existing_route_type = RouteType.query.filter(RouteType.routeTypeName == routeTypeName).one_or_none()
+    
+    if existing_route_type is None:
+        new_route_type = RouteType(routeTypeName=routeTypeName)
+        db.session.add(new_route_type)
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description=f'Error creating route type: {str(e)}')
+        return route_type_schema.dump(new_route_type), 201
+    else:
+        abort(409, description=f'Route type with name {routeTypeName} already exists')
 
 # Update an existing route type
-def update(routeTypeID, routetype):
-    update_routetype = RouteType.query.filter(RouteType.routeTypeID == routeTypeID).one_or_none()
-    if update_routetype:
-        # Manually update fields instead of using schema load
-        update_routetype.routeTypeName = routetype.get("routeTypeName", update_routetype.routeTypeName)
-        db.session.commit()
-        return route_type_schema.dump(update_routetype), 200  # Return updated route type
+def update(route_type_id):
+    route_type_data = request.get_json()
+    route_type = RouteType.query.filter(RouteType.routeTypeID == route_type_id).one_or_none()
+    
+    if route_type:
+        route_type.routeTypeName = route_type_data.get('routeTypeName', route_type.routeTypeName)
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description=f'Error updating route type: {str(e)}')
+        return route_type_schema.dump(route_type)
     else:
-        abort(404, f'RouteType not found for Id: {routeTypeID}')
+        abort(404, description=f'RouteType not found for Id: {route_type_id}')
 
 # Delete a route type
-def delete(routeTypeID):
-    routetype = RouteType.query.filter(RouteType.routeTypeID == routeTypeID).one_or_none()
-    if routetype:
-        db.session.delete(routetype)
-        db.session.commit()
-        return make_response(f'RouteType {routeTypeID} successfully deleted', 200)
+def delete(route_type_id):
+    route_type = RouteType.query.filter(RouteType.routeTypeID == route_type_id).one_or_none()
+    
+    if route_type:
+        try:
+            db.session.delete(route_type)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description=f'Error deleting route type: {str(e)}')
+        return make_response(jsonify({"message": "RouteType deleted successfully"}), 204)
     else:
-        abort(404, f'RouteType not found for Id: {routeTypeID}')
+        abort(404, description=f'RouteType not found for Id: {route_type_id}')

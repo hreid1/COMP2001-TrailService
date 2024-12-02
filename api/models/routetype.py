@@ -11,10 +11,9 @@ class RouteType(db.Model):
     __tablename__ = 'route_type'
     routeTypeID = db.Column(db.Integer, primary_key=True)
     routeTypeName = db.Column(db.String(255), nullable=False, unique=True)
-    timestamp = db.Column(
-        db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
-        onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
-    )
+
+    # Relationship with Trail
+    #trails = db.relationship('Trail', back_populates='route_type')
 
 class RouteTypeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -24,8 +23,6 @@ class RouteTypeSchema(ma.SQLAlchemyAutoSchema):
 
     routeTypeID = fields.Integer(dump_only=True)
     routeTypeName = fields.String(required=True)
-    timestamp = fields.DateTime(dump_only=True)
 
 route_type_schema = RouteTypeSchema()
 route_types_schema = RouteTypeSchema(many=True)
-

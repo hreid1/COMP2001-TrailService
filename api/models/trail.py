@@ -31,8 +31,13 @@ class Trail(db.Model):
     )
 
     # Relationships
-    features = db.relationship('TrailFeatureJoin', back_populates='trail')
-    location_points = db.relationship('LocationPoint', back_populates='trail')
+    trail_feature_joins = db.relationship(
+        'TrailFeatureJoin',
+        back_populates='trail',
+        cascade="all, delete, delete-orphan",
+        single_parent=True,
+        order_by="desc(TrailFeatureJoin.timestamp)"  # Assuming TrailFeatureJoin has a timestamp field
+    )
 
 class TrailSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

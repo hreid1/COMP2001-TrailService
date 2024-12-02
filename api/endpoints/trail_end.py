@@ -1,5 +1,5 @@
 from flask import abort, make_response
-from api.database.config import db
+from database import db
 from models import Trail, trail_schema, trails_schema
 
 # Get all trails

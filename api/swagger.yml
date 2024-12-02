@@ -29,7 +29,152 @@ paths:
               $ref: '#/components/schemas/Trail'
       responses:
         '201':
-          description: Trail created
+          description: Trail created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trail'
+  /trails/{trailId}:
+    get:
+      summary: Get a trail by ID
+      parameters:
+        - in: path
+          name: trailId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the trail to retrieve
+      responses:
+        '200':
+          description: A single trail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trail'
+        '404':
+          description: Trail not found
+    put:
+      summary: Update a trail by ID
+      parameters:
+        - in: path
+          name: trailId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the trail to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trail'
+      responses:
+        '200':
+          description: Trail updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trail'
+        '404':
+          description: Trail not found
+    delete:
+      summary: Delete a trail by ID
+      parameters:
+        - in: path
+          name: trailId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the trail to delete
+      responses:
+        '204':
+          description: Trail deleted successfully
+        '404':
+          description: Trail not found
+  /owners:
+    get:
+      summary: Get all owners
+      responses:
+        '200':
+          description: A list of owners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Owner'
+    post:
+      summary: Create a new owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Owner'
+      responses:
+        '201':
+          description: Owner created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+  /owners/{ownerId}:
+    get:
+      summary: Get an owner by ID
+      parameters:
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the owner to retrieve
+      responses:
+        '200':
+          description: A single owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+        '404':
+          description: Owner not found
+    put:
+      summary: Update an owner by ID
+      parameters:
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the owner to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Owner'
+      responses:
+        '200':
+          description: Owner updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+        '404':
+          description: Owner not found
+    delete:
+      summary: Delete an owner by ID
+      parameters:
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the owner to delete
+      responses:
+        '204':
+          description: Owner deleted successfully
+        '404':
+          description: Owner not found
 components:
   schemas:
     Trail:
@@ -37,22 +182,44 @@ components:
       properties:
         id:
           type: integer
-          format: int64
-        name:
+          readOnly: true
+        trailName:
           type: string
-        location:
-          type: string
-        length:
+        rating:
           type: number
           format: float
-        difficulty:
+        trailDescription:
           type: string
-          enum:
-            - easy
-            - moderate
-            - hard
-      required:
-        - name
-        - location
-        - length
-        - difficulty
+        trailDistance:
+          type: number
+          format: float
+        trailElevationGain:
+          type: number
+          format: float
+        averageTimeToComplete:
+          type: number
+          format: float
+        difficultyID:
+          type: integer
+        routeTypeID:
+          type: integer
+        locationID:
+          type: integer
+        ownerID:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+    Owner:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        ownerName:
+          type: string
+        email:
+          type: string
+        isAdmin:
+          type: boolean

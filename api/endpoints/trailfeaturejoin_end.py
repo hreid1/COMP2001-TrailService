@@ -1,5 +1,5 @@
 from flask import abort, make_response
-from api.database.config import db
+from database import db
 from models import TrailFeatureJoin, trail_feature_join_schema
 
 # Associate a trail with a feature (creating a TrailFeatureJoin)

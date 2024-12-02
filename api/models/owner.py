@@ -1,20 +1,16 @@
-from datetime import datetime
-import pytz
+from database import db, ma
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import fields
-
-from database import db, ma
 
 class Owner(db.Model):
     __tablename__ = 'owner'
     ownerID = db.Column(db.Integer, primary_key=True)
-    ownerName = db.Column(db.String(255), nullable=False, unique=True)
-    email = db.Column(db.String(255), nullable=False, unique=True, index=True)
-    isAdmin = db.Column(db.Boolean, nullable=False, default=False)
-    timestamp = db.Column(
-        db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
-        onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
-    )
+    ownerName = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    isAdmin = db.Column(db.Boolean, nullable=False)
+
+    # Relationship with Trail
+    #trails = db.relationship('Trail', back_populates='owner')
 
 class OwnerSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -25,8 +21,7 @@ class OwnerSchema(ma.SQLAlchemyAutoSchema):
     ownerID = fields.Integer(dump_only=True)
     ownerName = fields.String(required=True)
     email = fields.String(required=True)
-    isAdmin = fields.Boolean()
-    timestamp = fields.DateTime(dump_only=True)
+    isAdmin = fields.Boolean(required=True)
 
 owner_schema = OwnerSchema()
 owners_schema = OwnerSchema(many=True)

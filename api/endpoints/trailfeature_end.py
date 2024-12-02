@@ -1,5 +1,5 @@
 from flask import abort, make_response
-from api.database.config import db
+from database import db
 from models import TrailFeature, trail_feature_schema, trail_features_schema
 
 # Get all trail features

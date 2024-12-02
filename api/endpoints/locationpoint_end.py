@@ -1,5 +1,5 @@
 from flask import abort, make_response
-from api.database.config import db
+from database import db
 from models import LocationPoint, location_point_schema, location_points_schema
 
 # Get all location points

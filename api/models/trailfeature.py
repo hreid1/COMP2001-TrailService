@@ -2,9 +2,6 @@ from datetime import datetime
 import pytz
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import fields
-from sqlalchemy import CheckConstraint
-from sqlalchemy.sql import func
-
 from database import db, ma
 
 class TrailFeature(db.Model):
@@ -16,9 +13,9 @@ class TrailFeature(db.Model):
         onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
     )
 
-    # Relationship with TrailFeatureJoin (many-to-many relationship)
-    trails = db.relationship('Trail', secondary='trail_feature_join', back_populates='features')
-
+    # Relationship with TrailFeatureJoin (one-to-many relationship)
+    trail_features = db.relationship('TrailFeatureJoin', back_populates='feature')
+    
 class TrailFeatureSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TrailFeature

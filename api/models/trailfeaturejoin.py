@@ -1,9 +1,6 @@
 from datetime import datetime
-import pytz
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import fields
-from sqlalchemy import CheckConstraint
-from sqlalchemy.sql import func
 
 from database import db, ma
 
@@ -11,11 +8,11 @@ class TrailFeatureJoin(db.Model):
     __tablename__ = 'trail_feature_join'
     id = db.Column(db.Integer, primary_key=True)
     trailID = db.Column(db.Integer, db.ForeignKey('trail.id'))
-    featureID = db.Column(db.Integer, db.ForeignKey('trail_feature.featureID'))
+    featureID = db.Column(db.Integer, db.ForeignKey('trail_feature.id'))
 
-    trail = db.relationship('Trail', back_populates='features')
-    feature = db.relationship('TrailFeature', back_populates='trails')
-
+    # Relationship with Trail
+    trail = db.relationship('Trail', back_populates='trail_feature_joins')
+    feature = db.relationship('TrailFeature', back_populates='trail_features')
 
 class TrailFeatureJoinSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

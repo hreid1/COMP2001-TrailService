@@ -1,20 +1,16 @@
 from datetime import datetime
 import pytz
+from database import db, ma
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import fields
-from sqlalchemy import CheckConstraint
-from sqlalchemy.sql import func
-
-from database import db, ma
 
 class Difficulty(db.Model):
     __tablename__ = 'difficulty'
     difficultyID = db.Column(db.Integer, primary_key=True)
-    difficultyName = db.Column(db.String(255), nullable=False, unique=True)
-    timestamp = db.Column(
-        db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
-        onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
-    )
+    difficultyName = db.Column(db.String(255), nullable=False)
+
+    # Relationship with Trail
+    #trails = db.relationship('Trail', back_populates='difficulty')
 
 class DifficultySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -24,8 +20,6 @@ class DifficultySchema(ma.SQLAlchemyAutoSchema):
 
     difficultyID = fields.Integer(dump_only=True)
     difficultyName = fields.String(required=True)
-    timestamp = fields.DateTime(dump_only=True)
 
 difficulty_schema = DifficultySchema()
 difficulties_schema = DifficultySchema(many=True)
-

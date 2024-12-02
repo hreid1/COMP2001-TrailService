@@ -1,3 +1,5 @@
+# config.py
+
 import pathlib
 import connexion
 from flask_sqlalchemy import SQLAlchemy
@@ -22,15 +24,15 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# Function to check the database connection
+# Function to check database connection
 def check_db_connection():
     try:
-        # Try establishing a simple connection
-        with db.engine.connect() as connection:
-            print("Database connection successful!")
+        # Attempt to execute a simple query
+        db.session.execute("SELECT 1")
+        print("Database connection successful!")
     except Exception as e:
         print(f"Database connection failed: {str(e)}")
 
-# Call the function to check the connection when the app starts
+# Call the function to check connection when the app starts
 with app.app_context():
     check_db_connection()

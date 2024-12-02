@@ -6,7 +6,8 @@ from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from api.database.config import db, ma
+from database import db, ma
+from .trailfeaturejoin import TrailFeatureJoin  # Import TrailFeatureJoin
 
 class Trail(db.Model):
     __tablename__ = 'trail'
@@ -31,19 +32,10 @@ class Trail(db.Model):
         db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
         onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
     )
-    
+
     # Relationships
-        # One-to-many relationship with LocationPoint
-    location_points = db.relationship('LocationPoint', back_populates='trail', cascade='all, delete-orphan')
-    
-        # Many-to-many relationship with TrailFeature through TrailFeatureJoin
-    features = db.relationship('TrailFeature', secondary='trail_feature_join', back_populates='trails')
-    
-        # Foreign key relationships with other tables
-    difficulty = db.relationship('Difficulty', back_populates='trails')
-    route_type = db.relationship('RouteType', back_populates='trails')
-    location = db.relationship('Location', back_populates='trails')
-    owner = db.relationship('Owner', back_populates='trails')
+    features = relationship('TrailFeatureJoin', backref='trail')
+    location_points = db.relationship('LocationPoint', back_populates='trail')  # Use deferred relationship
 
 class TrailSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -53,24 +45,16 @@ class TrailSchema(ma.SQLAlchemyAutoSchema):
 
     id = fields.Integer(dump_only=True)
     trailName = fields.String(required=True)
-    rating = fields.Decimal(as_string=True)
+    rating = fields.Decimal()
+    trailDescription = fields.String()
+    trailDistance = fields.Decimal()
+    trailElevationGain = fields.Decimal()
+    averageTimeToComplete = fields.Decimal()
     difficultyID = fields.Integer()
     routeTypeID = fields.Integer()
     locationID = fields.Integer()
-    trailDescription = fields.String()
-    trailDistance = fields.Decimal(as_string=True)
-    trailElevationGain = fields.Decimal(as_string=True)
-    averageTimeToComplete = fields.Decimal(as_string=True)
     ownerID = fields.Integer()
     timestamp = fields.DateTime()
-    
-    # Nested relationships
-    location_points = fields.Nested('LocationPointSchema', many=True)  # Nested relationship with LocationPoint
-    features = fields.Nested('TrailFeatureSchema', many=True)  # Nested relationship with TrailFeature
-    difficulty = fields.Nested('DifficultySchema', many=False)  # Nested relationship with Difficulty
-    route_type = fields.Nested('RouteTypeSchema', many=False)  # Nested relationship with RouteType
-    location = fields.Nested('LocationSchema', many=False)  # Nested relationship with Location
-    owner = fields.Nested('OwnerSchema', many=False)  # Nested relationship with Owner
 
 trail_schema = TrailSchema()
 trails_schema = TrailSchema(many=True)

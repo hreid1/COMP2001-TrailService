@@ -5,7 +5,7 @@ from marshmallow_sqlalchemy.fields import fields
 from sqlalchemy import CheckConstraint
 from sqlalchemy.sql import func
 
-from api.database.config import db, ma
+from database import db, ma
 
 
 class Location(db.Model):

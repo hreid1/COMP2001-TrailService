@@ -5,7 +5,7 @@ from marshmallow_sqlalchemy.fields import fields
 from sqlalchemy import CheckConstraint
 from sqlalchemy.sql import func
 
-from api.database.config import db,ma
+from database import db, ma
 
 class TrailFeatureJoin(db.Model):
     __tablename__ = 'trail_feature_join'

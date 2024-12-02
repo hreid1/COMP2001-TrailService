@@ -3,7 +3,7 @@ import pytz
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import fields
 
-from api.database.config import db, ma
+from database import db, ma
 
 class Owner(db.Model):
     __tablename__ = 'owner'

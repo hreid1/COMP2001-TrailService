@@ -1,10 +1,13 @@
 from flask import render_template
+from endpoints import register_routes
 
 import config
 from models import Trail
 
 app = config.connex_app
 app.add_api(config.basedir / "swagger.yml")
+
+# register_routes(app)
 
 @app.route("/")
 def home():

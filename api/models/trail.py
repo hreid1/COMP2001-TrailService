@@ -5,11 +5,6 @@ from marshmallow_sqlalchemy.fields import fields
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
 from database import db, ma
-from .trailfeaturejoin import TrailFeatureJoin  # Import TrailFeatureJoin
-
-# In trail.py
-from database import db
-from sqlalchemy.orm import relationship
 
 class Trail(db.Model):
     __tablename__ = 'trail'
@@ -36,8 +31,8 @@ class Trail(db.Model):
     )
 
     # Relationships
-    features = db.relationship('TrailFeatureJoin', back_populates='trail')  # Use string reference here
-    location_points = db.relationship('LocationPoint', back_populates='trail')  # Use deferred relationship
+    features = db.relationship('TrailFeatureJoin', back_populates='trail')
+    location_points = db.relationship('LocationPoint', back_populates='trail')
 
 class TrailSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

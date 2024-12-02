@@ -9,13 +9,12 @@ from database import db, ma
 
 class TrailFeatureJoin(db.Model):
     __tablename__ = 'trail_feature_join'
-    
-    trailID = db.Column(db.Integer, db.ForeignKey('trail.id'), primary_key=True)
-    featureID = db.Column(db.Integer, db.ForeignKey('trail_feature.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    trailID = db.Column(db.Integer, db.ForeignKey('trail.id'))
+    featureID = db.Column(db.Integer, db.ForeignKey('trail_feature.featureID'))
 
-    # Relationships
-    trail = db.relationship('Trail', back_populates='features')  # Use string reference here
-    feature = db.relationship('TrailFeature', back_populates='trails')  # Use string reference here
+    trail = db.relationship('Trail', back_populates='features')
+    feature = db.relationship('TrailFeature', back_populates='trails')
 
 
 class TrailFeatureJoinSchema(ma.SQLAlchemyAutoSchema):

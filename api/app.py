@@ -1,9 +1,7 @@
-# app.py
-
 import connexion
 from flask import jsonify
-from models import Trail  # Make sure you have this model defined
-from config import connex_app, db  # Import the connex_app and db from config.py
+from database.config import connex_app, db
+from models.trail import Trail, trails_schema
 
 # Initialize Flask and Connexion app
 app = connex_app.app
@@ -17,11 +15,11 @@ def home():
         # Query the database for all trails
         trails = Trail.query.all()
 
-        # Convert to a list of dictionaries (customize based on your model)
-        trails_list = [{"trailName": trail.trailName, "rating": trail.rating} for trail in trails]
+        # Serialize the list of trails using TrailSchema
+        trails_json = trails_schema.dump(trails)
 
-        # Return the list as a JSON response
-        return jsonify(trails_list)
+        # Return the serialized list as a JSON response
+        return jsonify(trails_json)
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500

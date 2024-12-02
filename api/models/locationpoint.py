@@ -7,16 +7,11 @@ from database import db, ma
 
 class LocationPoint(db.Model):
     __tablename__ = 'location_point'
-    id = db.Column(db.Integer, primary_key=True)
-    trail_id = db.Column(db.Integer, db.ForeignKey('trail.id'))
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    sequenceNumber = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(
-        db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
-        onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
-    )
-    # Relationships
+    pointID = db.Column(db.Integer, primary_key=True)
+    locationID = db.Column(db.Integer, db.ForeignKey('location.locationID'))
+    latitude = db.Column(db.Numeric(9, 6))
+    longitude = db.Column(db.Numeric(9, 6))
+
     trail = db.relationship('Trail', back_populates='location_points')
 
 class LocationPointSchema(ma.SQLAlchemyAutoSchema):

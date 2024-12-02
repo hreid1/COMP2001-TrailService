@@ -1,11 +1,11 @@
 from .difficulty_end import create, delete, read_all, read_one, update
 from .location_end import create, delete, read_all, read_one, update
-# from .locationpoint_end import 
+from .locationpoint_end import create, delete, read_all, read_one, update
 from .owner_end import create, delete, read_all, read_one, update
 from .routetype_end import create, delete, read_all, read_one, update
 from .trail_end import create, delete, read_all, read_one, update
-# from .trailfeature_end import create, delete, read_all, read_one, update
-# from .trailfeaturejoin_end import create, delete, read_all, read_one, update
+from .trailfeature_end import create, delete, read_all, read_one, update
+from .trailfeaturejoin_end import create, delete, read_all, read_one, update
 
 def register_routes(app):
     # Register routes for each endpoint
@@ -39,14 +39,14 @@ def register_routes(app):
     app.add_url_rule('/trails/<int:trail_id>', 'update_trail', update, methods=['PUT'])
     app.add_url_rule('/trails/<int:trail_id>', 'delete_trail', delete, methods=['DELETE'])
 
-    # app.add_url_rule('/trailfeatures', 'read_all_trailfeatures', read_all, methods=['GET'])
-    # app.add_url_rule('/trailfeatures/<int:trailfeature_id>', 'read_one_trailfeature', read_one, methods=['GET'])
-    # app.add_url_rule('/trailfeatures', 'create_trailfeature', create, methods=['POST'])
-    # app.add_url_rule('/trailfeatures/<int:trailfeature_id>', 'update_trailfeature', update, methods=['PUT'])
-    # app.add_url_rule('/trailfeatures/<int:trailfeature_id>', 'delete_trailfeature', delete, methods=['DELETE'])
+    app.add_url_rule('/trailfeatures', 'read_all_trailfeatures', read_all, methods=['GET'])
+    app.add_url_rule('/trailfeatures/<int:trailfeature_id>', 'read_one_trailfeature', read_one, methods=['GET'])
+    app.add_url_rule('/trailfeatures', 'create_trailfeature', create, methods=['POST'])
+    app.add_url_rule('/trailfeatures/<int:trailfeature_id>', 'update_trailfeature', update, methods=['PUT'])
+    app.add_url_rule('/trailfeatures/<int:trailfeature_id>', 'delete_trailfeature', delete, methods=['DELETE'])
 
-    # app.add_url_rule('/trailfeaturejoins', 'read_all_trailfeaturejoins', read_all, methods=['GET'])
-    # app.add_url_rule('/trailfeaturejoins/<int:trailfeaturejoin_id>', 'read_one_trailfeaturejoin', read_one, methods=['GET'])
-    # app.add_url_rule('/trailfeaturejoins', 'create_trailfeaturejoin', create, methods=['POST'])
-    # app.add_url_rule('/trailfeaturejoins/<int:trailfeaturejoin_id>', 'update_trailfeaturejoin', update, methods=['PUT'])
-    # app.add_url_rule('/trailfeaturejoins/<int:trailfeaturejoin_id>', 'delete_trailfeaturejoin', delete, methods=['DELETE'])
+    app.add_url_rule('/trailfeaturejoins', 'read_all_trailfeaturejoins', read_all, methods=['GET'])
+    app.add_url_rule('/trailfeaturejoins/<int:trailfeaturejoin_id>', 'read_one_trailfeaturejoin', read_one, methods=['GET'])
+    app.add_url_rule('/trailfeaturejoins', 'create_trailfeaturejoin', create, methods=['POST'])
+    app.add_url_rule('/trailfeaturejoins/<int:trailfeaturejoin_id>', 'update_trailfeaturejoin', update, methods=['PUT'])
+    app.add_url_rule('/trailfeaturejoins/<int:trailfeaturejoin_id>', 'delete_trailfeaturejoin', delete, methods=['DELETE'])

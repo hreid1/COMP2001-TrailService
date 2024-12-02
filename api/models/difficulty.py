@@ -24,7 +24,7 @@ class DifficultySchema(ma.SQLAlchemyAutoSchema):
 
     difficultyID = fields.Integer(dump_only=True)
     difficultyName = fields.String(required=True)
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 difficulty_schema = DifficultySchema()
 difficulties_schema = DifficultySchema(many=True)

@@ -27,7 +27,7 @@ class TrailFeatureSchema(ma.SQLAlchemyAutoSchema):
 
     id = fields.Integer(dump_only=True)
     featureName = fields.String(required=True)
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 trail_feature_schema = TrailFeatureSchema()
 trail_features_schema = TrailFeatureSchema(many=True)

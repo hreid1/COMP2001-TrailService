@@ -24,7 +24,7 @@ class RouteTypeSchema(ma.SQLAlchemyAutoSchema):
 
     routeTypeID = fields.Integer(dump_only=True)
     routeTypeName = fields.String(required=True)
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 route_type_schema = RouteTypeSchema()
 route_types_schema = RouteTypeSchema(many=True)

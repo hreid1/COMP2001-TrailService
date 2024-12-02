@@ -25,7 +25,7 @@ class LocationSchema(ma.SQLAlchemyAutoSchema):
 
     locationID = fields.Integer(dump_only=True)
     locationName = fields.String(required=True)
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 location_schema = LocationSchema()
 locations_schema = LocationSchema(many=True)

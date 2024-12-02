@@ -24,15 +24,3 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# Function to check database connection
-def check_db_connection():
-    try:
-        # Attempt to execute a simple query
-        db.session.execute("SELECT 1")
-        print("Database connection successful!")
-    except Exception as e:
-        print(f"Database connection failed: {str(e)}")
-
-# Call the function to check connection when the app starts
-with app.app_context():
-    check_db_connection()

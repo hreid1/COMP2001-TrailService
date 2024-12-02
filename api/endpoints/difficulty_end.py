@@ -18,12 +18,20 @@ def read_one(difficulty_id):
 # Create a new difficulty
 def create(difficulty_data):
     difficultyName = difficulty_data.get('difficultyName')
+    
+    if not difficultyName:
+        abort(400, description='Difficulty name is required')
+
     existing_difficulty = Difficulty.query.filter(Difficulty.difficultyName == difficultyName).one_or_none()
     
     if existing_difficulty is None:
         new_difficulty = Difficulty(difficultyName=difficultyName)
         db.session.add(new_difficulty)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description="An error occurred while creating difficulty")
         return difficulty_schema.dump(new_difficulty), 201  # Created response
     else:
         abort(409, description=f'Difficulty {difficultyName} already exists')
@@ -31,11 +39,21 @@ def create(difficulty_data):
 # Update an existing difficulty
 def update(difficulty_id, difficulty_data):
     update_difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).one_or_none()
+    
     if update_difficulty:
-        # Update the fields with the new data
-        update_difficulty.difficultyName = difficulty_data.get('difficultyName', update_difficulty.difficultyName)
+        difficultyName = difficulty_data.get('difficultyName', update_difficulty.difficultyName)
+        
+        if not difficultyName:
+            abort(400, description='Difficulty name cannot be empty')
 
-        db.session.commit()
+        update_difficulty.difficultyName = difficultyName
+        
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description="An error occurred while updating difficulty")
+
         return difficulty_schema.dump(update_difficulty), 200  # OK response
     else:
         abort(404, description=f'Difficulty not found for Id: {difficulty_id}')
@@ -43,9 +61,14 @@ def update(difficulty_id, difficulty_data):
 # Delete a difficulty
 def delete(difficulty_id):
     difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).one_or_none()
+    
     if difficulty:
         db.session.delete(difficulty)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description="An error occurred while deleting difficulty")
         return make_response(f'Difficulty {difficulty_id} deleted', 204)  # No content response
     else:
         abort(404, description=f'Difficulty not found for Id: {difficulty_id}')

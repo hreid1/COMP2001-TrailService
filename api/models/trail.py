@@ -4,10 +4,12 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import fields
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-
 from database import db, ma
 from .trailfeaturejoin import TrailFeatureJoin  # Import TrailFeatureJoin
+
+# In trail.py
+from database import db
+from sqlalchemy.orm import relationship
 
 class Trail(db.Model):
     __tablename__ = 'trail'
@@ -34,7 +36,7 @@ class Trail(db.Model):
     )
 
     # Relationships
-    features = relationship('TrailFeatureJoin', backref='trail')
+    features = db.relationship('TrailFeatureJoin', back_populates='trail')  # Use string reference here
     location_points = db.relationship('LocationPoint', back_populates='trail')  # Use deferred relationship
 
 class TrailSchema(ma.SQLAlchemyAutoSchema):
@@ -54,7 +56,7 @@ class TrailSchema(ma.SQLAlchemyAutoSchema):
     routeTypeID = fields.Integer()
     locationID = fields.Integer()
     ownerID = fields.Integer()
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 trail_schema = TrailSchema()
 trails_schema = TrailSchema(many=True)

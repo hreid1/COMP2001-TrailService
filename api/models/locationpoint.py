@@ -12,8 +12,10 @@ class LocationPoint(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
     sequenceNumber = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')))
-
+    timestamp = db.Column(
+        db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
+        onupdate=lambda: datetime.now(pytz.timezone('Europe/London'))
+    )
     # Relationships
     trail = db.relationship('Trail', back_populates='location_points')
 
@@ -28,7 +30,7 @@ class LocationPointSchema(ma.SQLAlchemyAutoSchema):
     latitude = fields.Float(required=True)
     longitude = fields.Float(required=True)
     sequenceNumber = fields.Integer(required=True)
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 location_point_schema = LocationPointSchema()
 location_points_schema = LocationPointSchema(many=True)

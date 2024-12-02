@@ -9,7 +9,7 @@ class Owner(db.Model):
     __tablename__ = 'owner'
     ownerID = db.Column(db.Integer, primary_key=True)
     ownerName = db.Column(db.String(255), nullable=False, unique=True)
-    email = db.Column(db.String(255), nullable=False, unique=True)
+    email = db.Column(db.String(255), nullable=False, unique=True, index=True)
     isAdmin = db.Column(db.Boolean, nullable=False, default=False)
     timestamp = db.Column(
         db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/London')),
@@ -26,7 +26,7 @@ class OwnerSchema(ma.SQLAlchemyAutoSchema):
     ownerName = fields.String(required=True)
     email = fields.String(required=True)
     isAdmin = fields.Boolean()
-    timestamp = fields.DateTime()
+    timestamp = fields.DateTime(dump_only=True)
 
 owner_schema = OwnerSchema()
 owners_schema = OwnerSchema(many=True)

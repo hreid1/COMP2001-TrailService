@@ -9,4 +9,4 @@ from .trailfeature import TrailFeature, TrailFeatureSchema
 from .trailfeaturejoin import TrailFeatureJoin, TrailFeatureJoinSchema
 from .locationpoint import LocationPoint, LocationPointSchema
 
-from config import db, ma
+from api.database.config import db, ma

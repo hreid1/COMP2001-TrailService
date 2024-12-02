@@ -5,7 +5,7 @@ from marshmallow_sqlalchemy.fields import fields
 from sqlalchemy import CheckConstraint
 from sqlalchemy.sql import func
 
-from config import db, ma
+from api.database.config import db, ma
 
 class Difficulty(db.Model):
     __tablename__ = 'difficulty'

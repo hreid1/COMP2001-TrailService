@@ -1,5 +1,5 @@
 from flask import abort, make_response
-from config import db
+from api.database.config import db
 from models import Location, location_schema, locations_schema
 
 def read_all():

@@ -6,7 +6,7 @@ from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from config import db, ma
+from api.database.config import db, ma
 
 class Trail(db.Model):
     __tablename__ = 'trail'

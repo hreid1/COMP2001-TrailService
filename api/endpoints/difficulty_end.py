@@ -1,5 +1,5 @@
 from flask import abort, make_response, jsonify
-from config import db
+from api.database.config import db
 from models import Difficulty, difficulty_schema, difficulties_schema
 
 # Get all difficulties

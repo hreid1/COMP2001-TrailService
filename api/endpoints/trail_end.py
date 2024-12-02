@@ -1,6 +1,6 @@
 from flask import abort, make_response
 
-from config import db
+from api.database.config import db
 from models import Trail, trail_schema, trails_schema
 
 def read_all():

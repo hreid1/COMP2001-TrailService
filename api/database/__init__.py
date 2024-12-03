@@ -1,1 +1,0 @@
-from .config import db, ma, connex_app

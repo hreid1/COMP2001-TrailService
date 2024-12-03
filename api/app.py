@@ -1,22 +1,14 @@
-from flask import Flask, jsonify
-from database import connex_app, db
-from endpoints import register_routes
+from flask import Flask, render_template, jsonify
+import config
+from models import Trail, trails_schema
 
-# Initialize Flask and Connexion app
-app = connex_app.app
-
-# Swagger integration 
-#connex_app.add_api('swagger.yml') 
-
-# Register endponts
-register_routes(app)
-
+app = config.connex_app
+#app.add_api(config.basedir / "swagger.yml")
 
 @app.route("/")
 def home():
-    return jsonify({"message": "Welcome to the Trail Service API"})
+    return render_template("home.html")
+    
 
-# Start the application
 if __name__ == "__main__":
-    # Ensure the app is running in debug mode (if required)
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="127.0.0.1", port=8000)

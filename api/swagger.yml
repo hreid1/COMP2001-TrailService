@@ -1,225 +1,112 @@
 openapi: 3.0.0
+
 info:
-  title: Trail Service API
-  description: API for managing trail services
-  version: 1.0.0
+  title: "Trail Service API"
+  version: "1.0.0"
+  description: "A simple API to manage trails"
 servers:
-  - url: http://localhost:8000
-    description: Local server
-paths:
-  /trails:
-    get:
-      summary: Get all trails
-      responses:
-        '200':
-          description: A list of trails
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Trail'
-    post:
-      summary: Create a new trail
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Trail'
-      responses:
-        '201':
-          description: Trail created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trail'
-  /trails/{trailId}:
-    get:
-      summary: Get a trail by ID
-      parameters:
-        - in: path
-          name: trailId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the trail to retrieve
-      responses:
-        '200':
-          description: A single trail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trail'
-        '404':
-          description: Trail not found
-    put:
-      summary: Update a trail by ID
-      parameters:
-        - in: path
-          name: trailId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the trail to update
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Trail'
-      responses:
-        '200':
-          description: Trail updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trail'
-        '404':
-          description: Trail not found
-    delete:
-      summary: Delete a trail by ID
-      parameters:
-        - in: path
-          name: trailId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the trail to delete
-      responses:
-        '204':
-          description: Trail deleted successfully
-        '404':
-          description: Trail not found
-  /owners:
-    get:
-      summary: Get all owners
-      responses:
-        '200':
-          description: A list of owners
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Owner'
-    post:
-      summary: Create a new owner
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Owner'
-      responses:
-        '201':
-          description: Owner created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Owner'
-  /owners/{ownerId}:
-    get:
-      summary: Get an owner by ID
-      parameters:
-        - in: path
-          name: ownerId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the owner to retrieve
-      responses:
-        '200':
-          description: A single owner
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Owner'
-        '404':
-          description: Owner not found
-    put:
-      summary: Update an owner by ID
-      parameters:
-        - in: path
-          name: ownerId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the owner to update
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Owner'
-      responses:
-        '200':
-          description: Owner updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Owner'
-        '404':
-          description: Owner not found
-    delete:
-      summary: Delete an owner by ID
-      parameters:
-        - in: path
-          name: ownerId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the owner to delete
-      responses:
-        '204':
-          description: Owner deleted successfully
-        '404':
-          description: Owner not found
+  - url: "/api"
+
 components:
   schemas:
     Trail:
-      type: object
+      type: "object"
       properties:
-        id:
-          type: integer
-          readOnly: true
-        trailName:
-          type: string
-        rating:
-          type: number
-          format: float
-        trailDescription:
-          type: string
-        trailDistance:
-          type: number
-          format: float
-        trailElevationGain:
-          type: number
-          format: float
-        averageTimeToComplete:
-          type: number
-          format: float
-        difficultyID:
-          type: integer
-        routeTypeID:
-          type: integer
-        locationID:
-          type: integer
-        ownerID:
-          type: integer
-        timestamp:
-          type: string
-          format: date-time
-          readOnly: true
-    Owner:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        ownerName:
-          type: string
-        email:
-          type: string
-        isAdmin:
-          type: boolean
+        trail_id:
+          type: "integer"
+        name:
+          type: "string"
+        difficulty:
+          type: "string"
+        location:
+          type: "string"
+        length:
+          type: "number"
+        elevation_gain:
+          type: "number"
+        owner_id:
+          type: "integer"
+        route_id:
+          type: "integer"
+
+paths:
+  /trails:
+    get:
+      summary: "Get all trails"
+      operationId: "trails.read_all"
+      responses:
+        '200':
+          description: "A list of trails"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Trail"
+    post:
+      summary: "Create a new trail"
+      operationId: "trails.create"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Trail"
+      responses:
+        '201':
+          description: "Trail created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+  /trails/{trail_id}:
+    get:
+      summary: "Get a trail by ID"
+      operationId: "trails.read_one"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '200':
+          description: "A trail"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+    put:
+      summary: "Update a trail by ID"
+      operationId: "trails.update"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Trail"
+      responses:
+        '200':
+          description: "Trail updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+    delete:
+      summary: "Delete a trail by ID"
+      operationId: "trails.delete"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '204':
+          description: "Trail deleted"

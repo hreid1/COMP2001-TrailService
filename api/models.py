@@ -2,12 +2,27 @@
 from config import db, ma
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, fields
 
+# Models
+    # Owner (One-to-many) -> Trail
+    # RouteType (One-to-many) -> Trail
+    # Trail-Feature (JOIN TABLE) -> Trail, Feature
+    # Feature (One-to-many) -> Trail-Feature -> (One-to-many) Trail
+    # LocationPoint (One-to-many) -> Trail
+    # Trail 
+# Schemas
+    # OwnerSchema 
+    # RouteTypeSchema
+    # TrailSchema
+    # FeatureSchema
+    # LocationPointSchema
+    # TrailFeatureSchema (JOIN TABLE)
+
 class Owner(db.Model): 
-    __tablename__ = 'owners'
-    __table_args__ = {'schema': 'CW2', 'extend_existing': True}
+    __tablename__ = 'owners' 
+    __table_args__ = {'schema': 'CW2', 'extend_existing': True} 
 
     # Entity columns
-    owner_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    owner_id = db.Column(db.Integer, primary_key=True, autoincrement=True) 
     owner_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)

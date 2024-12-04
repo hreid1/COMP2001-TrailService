@@ -4,6 +4,12 @@ info:
   title: "Trail Service API"
   version: "1.0.0"
   description: "A simple API to manage trails"
+  contact:
+    name: "Henry Reid"
+    email: "henryreid05@gmail.com"
+    url: "https://henryreid.com"
+
+
 servers:
   - url: "/api"
 
@@ -28,6 +34,28 @@ components:
           type: "integer"
         route_id:
           type: "integer"
+
+    Owner:
+      type: "object"
+      properties:
+        owner_id:
+          type: "integer"
+        name:
+          type: "string"
+        email:
+          type: "string"
+        is_admin:
+          type: "boolean"
+
+    RouteType:
+      type: "object"
+      properties:
+        route_id:
+          type: "integer"
+        route_type:
+          type: "string"
+      
+
 
 paths:
   /trails:
@@ -110,3 +138,83 @@ paths:
       responses:
         '204':
           description: "Trail deleted"
+  /owners:
+    get:
+      summary: "Get all owners"
+      operationId: "owners.read_all"
+      responses:
+        '200':
+          description: "A list of owners"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Owner"
+    post:
+      summary: "Create a new owner"
+      operationId: "owners.create"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Owner"
+      responses:
+        '201':
+          description: "Owner created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
+  /owners/{owner_id}:
+    get:
+      summary: "Get an owner by ID"
+      operationId: "owners.read_one"
+      parameters:
+        - name: "owner_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '200':
+          description: "An owner"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
+    put:
+      summary: "Update an owner by ID"
+      operationId: "owners.update"
+      parameters:
+        - name: "owner_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Owner"
+      responses:
+        '200':
+          description: "Owner updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
+    delete:
+      summary: "Delete an owner by ID"
+      operationId: "owners.delete"
+      parameters:
+        - name: "owner_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '204':
+          description: "Owner deleted"

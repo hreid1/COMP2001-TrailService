@@ -2,6 +2,41 @@
 from config import db, ma
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, fields
 
+# Models
+    # Owner
+        # owner_id
+        # owner_name
+        # email
+        # is_admin
+    # RouteType
+        # route_id
+        # route_type
+    # Trail
+        # trail_id
+        # name
+        # difficulty
+        # location
+        # length
+        # elevation_gain
+        # owner_id
+        # route_id
+
+    # TrailFeature
+        # trail_id
+        # feature_id
+
+    # Feature
+        # feature_id
+        # feature_name
+
+    # LocationPoint
+        # location_point_id
+        # longitude
+        # latitude
+        # description
+        # sequence_number
+        
+
 class Owner(db.Model): 
     __tablename__ = 'owners'
     __table_args__ = {'schema': 'CW2', 'extend_existing': True}

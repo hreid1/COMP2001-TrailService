@@ -13,6 +13,40 @@ info:
 servers:
   - url: "/api"
 
+# Schemas
+  # Trail
+    # trail_id
+    # name
+    # difficulty
+    # location
+    # length
+    # elevation_gain
+    # owner_id
+    # route_id
+
+  # Owner
+    # owner_id
+    # name
+    # email
+    # is_admin
+
+  # RouteType
+    # route_id
+    # route_type
+
+  # TrailFeature
+    # trail_id
+    # feature_id
+  # Feature
+    # feature_id
+    # feature_name
+  # LocationPoint
+    # location_point_id
+    # latitude
+    # longitude
+    # description
+    # sequenceNumber
+
 components:
   schemas:
     Trail:
@@ -63,19 +97,132 @@ components:
         feature_id:
           type: "integer"
     
-    Feature: 
-      type: "object"
-      properties:
-        feature_id:
-          type: "integer"
-        feature_name:
-          type: "string"
-    
 
-      
+    
+# Paths
+  # Trails
+      # /trails
+      # /trails/{trail_id}
+    # Owners
+      # /owners
+      # /owners/{owner_id}
+    # Route Types
+      # /route_types
+      # /route_types/{route_id}
+    # Trail Features
+      # /trail_features
+      # /trail_features/{trail_id}
+    # Features
+      # /features
+      # /features/{feature_id}
+    # LocationPoints
+      # /location_points
+      # /location_points/{trail_id} 
 
 
 paths:
+  /trail_features:
+    get:
+      summary: "Get all TrailFeatures"
+      operationId: "trail_features.read_all"
+      responses:
+        '200':
+          description: "A list of TrailFeatures"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TrailFeature"
+    post:
+      summary: "Create a new TrailFeature"
+      operationId: "trail_features.create"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrailFeature"
+      responses:
+        '201':
+          description: "TrailFeature created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrailFeature"
+  /trail_features/{trail_id}/{feature_id}:
+    get:
+      summary: "Get a TrailFeature by Trail ID and Feature ID"
+      operationId: "trail_features.read_one"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the trail"
+        - name: "feature_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the feature"
+      responses:
+        '200':
+          description: "A TrailFeature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrailFeature"
+    put:
+      summary: "Update a TrailFeature"
+      operationId: "trail_features.update"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the trail"
+        - name: "feature_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the feature"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrailFeature"
+      responses:
+        '200':
+          description: "TrailFeature updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrailFeature"
+    delete:
+      summary: "Delete a TrailFeature"
+      operationId: "trail_features.delete"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the trail"
+        - name: "feature_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the feature"
+      responses:
+        '204':
+          description: "TrailFeature deleted"
+          
   /trails:
     get:
       summary: "Get all trails"
@@ -237,85 +384,3 @@ paths:
       responses:
         '204':
           description: "Owner deleted"
-
-  /TrailFeature:
-    get:
-      summary: "Get all trail features"
-      operationId: "trail_features.read_all"
-      responses:
-        '200':
-          description: "A list of trail features"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/TrailFeature"
-    post:
-      summary: "Create a new trail feature"
-      operationId: "trail_features.create"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TrailFeature"
-      responses:
-        '201':
-          description: "Trail feature created"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrailFeature"
-  /TrailFeature/{trail_id}:
-    get:
-      summary: "Get a trail feature by ID"
-      operationId: "trail_features.read_one"
-      parameters:
-        - name: "trail_id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-      responses:
-        '200':
-          description: "A trail feature"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrailFeature"
-    put:
-      summary: "Update a trail feature by ID"
-      operationId: "trail_features.update"
-      parameters:
-        - name: "trail_id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TrailFeature"
-      responses:
-        '200':
-          description: "Trail feature updated"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrailFeature"
-    delete:
-      summary: "Delete a trail feature by ID"
-      operationId: "trail_features.delete"
-      parameters:
-        - name: "trail_id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-      responses:
-        '204':
-          description: "Trail feature deleted"
-

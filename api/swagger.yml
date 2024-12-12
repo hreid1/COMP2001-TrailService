@@ -222,7 +222,7 @@ paths:
       responses:
         '204':
           description: "TrailFeature deleted"
-          
+
   /trails:
     get:
       summary: "Get all trails"
@@ -384,3 +384,84 @@ paths:
       responses:
         '204':
           description: "Owner deleted"
+
+  /route_types:
+    get:
+      summary: "Get all route types"
+      operationId: "route_types.read_all"
+      responses:
+        '200':
+          description: "A list of route types"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/RouteType"
+    post:
+      summary: "Create a new route type"
+      operationId: "route_types.create"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouteType"
+      responses:
+        '201':
+          description: "Route type created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteType"
+  /route_types/{route_id}:
+    get:
+      summary: "Get a route type by ID"
+      operationId: "route_types.read_one"
+      parameters:
+        - name: "route_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '200':
+          description: "A route type"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteType"
+    put:
+      summary: "Update a route type by ID"
+      operationId: "route_types.update"
+      parameters:
+        - name: "route_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouteType"
+      responses:
+        '200':
+          description: "Route type updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteType"
+    delete:
+      summary: "Delete a route type by ID"
+      operationId: "route_types.delete"
+      parameters:
+        - name: "route_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '204':
+          description: "Route type deleted"

@@ -37,9 +37,11 @@ servers:
   # TrailFeature
     # trail_id
     # feature_id
+
   # Feature
     # feature_id
     # feature_name
+
   # LocationPoint
     # location_point_id
     # latitude
@@ -96,9 +98,7 @@ components:
           type: "integer"
         feature_id:
           type: "integer"
-    
-
-    
+        
 # Paths
   # Trails
       # /trails
@@ -109,7 +109,7 @@ components:
     # Route Types
       # /route_types
       # /route_types/{route_id}
-    # Trail Features
+    # Trail Features JOIN TABLE
       # /trail_features
       # /trail_features/{trail_id}
     # Features
@@ -118,7 +118,6 @@ components:
     # LocationPoints
       # /location_points
       # /location_points/{trail_id} 
-
 
 paths:
   /trail_features:

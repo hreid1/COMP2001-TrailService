@@ -1,20 +1,15 @@
-import inspect
 import functools
-import warnings
-
+import inspect
 import uuid
+
 import marshmallow as ma
-from marshmallow import validate, fields
-from packaging.version import Version
-from sqlalchemy.dialects import postgresql, mysql, mssql
-from sqlalchemy.orm import SynonymProperty
 import sqlalchemy as sa
+from marshmallow import fields, validate
+from sqlalchemy.dialects import mssql, mysql, postgresql
+from sqlalchemy.orm import SynonymProperty
 
 from .exceptions import ModelConversionError
 from .fields import Related, RelatedList
-
-
-_META_KWARGS_DEPRECATED = Version(ma.__version__) >= Version("3.10.0")
 
 
 def _is_field(value):
@@ -47,11 +42,8 @@ def _postgres_array_factory(converter, data_type):
     )
 
 
-def _set_meta_kwarg(field_kwargs, key, value):
-    if _META_KWARGS_DEPRECATED:
-        field_kwargs["metadata"][key] = value
-    else:
-        field_kwargs[key] = value
+def _enum_field_factory(converter, data_type):
+    return fields.Enum if data_type.enum_class else fields.Field
 
 
 def _field_update_kwargs(field_class, field_kwargs, kwargs):
@@ -73,7 +65,7 @@ def _field_update_kwargs(field_class, field_kwargs, kwargs):
         if k in possible_field_keywords:
             field_kwargs[k] = v
         else:
-            _set_meta_kwarg(field_kwargs, k, v)
+            field_kwargs["metadata"][k] = v
     return field_kwargs
 
 
@@ -83,7 +75,7 @@ class ModelConverter:
     """
 
     SQLA_TYPE_MAPPING = {
-        sa.Enum: fields.Field,
+        sa.Enum: _enum_field_factory,
         sa.JSON: fields.Raw,
         postgresql.BIT: fields.Integer,
         postgresql.OID: fields.Integer,
@@ -294,20 +286,7 @@ class ModelConverter:
         if hasattr(prop, "direction"):  # Relationship property
             self._add_relationship_kwargs(kwargs, prop)
         if getattr(prop, "doc", None):  # Useful for documentation generation
-            _set_meta_kwarg(kwargs, "description", prop.doc)
-        info = getattr(prop, "info", dict())
-        overrides = info.get("marshmallow")
-        if overrides is not None:
-            warnings.warn(
-                'Passing `info={"marshmallow": ...}` is deprecated. '
-                "Use `SQLAlchemySchema` and `auto_field` instead.",
-                DeprecationWarning,
-            )
-            validate = overrides.pop("validate", [])
-            kwargs["validate"] = self._merge_validators(
-                kwargs["validate"], validate
-            )  # Ensure we do not override the generated validators.
-            kwargs.update(overrides)  # Override other kwargs.
+            kwargs["metadata"]["description"] = prop.doc
         return kwargs
 
     def _add_column_kwargs(self, kwargs, column):
@@ -325,6 +304,9 @@ class ModelConverter:
 
         if hasattr(column.type, "enums") and not kwargs.get("dump_only"):
             kwargs["validate"].append(validate.OneOf(choices=column.type.enums))
+
+        if hasattr(column.type, "enum_class"):
+            kwargs["enum"] = column.type.enum_class
 
         # Add a length validator if a max length is set on the column
         # Skip UUID columns
@@ -363,10 +345,7 @@ class ModelConverter:
         return False
 
     def get_base_kwargs(self):
-        kwargs = {"validate": []}
-        if _META_KWARGS_DEPRECATED:
-            kwargs["metadata"] = {}
-        return kwargs
+        return {"validate": [], "metadata": {}}
 
 
 default_converter = ModelConverter()

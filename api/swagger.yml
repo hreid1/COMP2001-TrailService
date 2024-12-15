@@ -115,6 +115,9 @@ components:
     # Features
       # /features
       # /features/{feature_id}
+    # TrailPoints
+      # /trail_points
+      # /trail_points/{trail_id}
     # LocationPoints
       # /location_points
       # /location_points/{trail_id} 

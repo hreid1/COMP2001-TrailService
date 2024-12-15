@@ -1,7 +1,7 @@
 import warnings
+
 from marshmallow import fields
 from marshmallow.utils import is_iterable_but_not_string
-
 from sqlalchemy import inspect
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -48,6 +48,7 @@ class Related(fields.Field):
                 "`column` parameter is deprecated and will be removed in future releases. "
                 "Use `columns` instead.",
                 DeprecationWarning,
+                stacklevel=2,
             )
             if columns is None:
                 columns = column
@@ -126,9 +127,9 @@ class Related(fields.Field):
             lookup_values = [value.get(prop.key) for prop in self.related_keys]
             try:
                 result = self.session.get(related_model, lookup_values)
-            except TypeError:
+            except TypeError as error:
                 keys = [prop.key for prop in self.related_keys]
-                raise self.make_error("invalid", value=value, keys=keys)
+                raise self.make_error("invalid", value=value, keys=keys) from error
             if result is None:
                 raise NoResultFound
         return result

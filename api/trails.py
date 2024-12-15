@@ -13,6 +13,7 @@ from models import Trail, trail_schema, trails_schema
         # Can only delete trail if admin/author of trail
 # Need to check user is admin before anything
 
+
 def read_one(trail_id):
     trail = Trail.query.get(trail_id)
     if trail is not None:

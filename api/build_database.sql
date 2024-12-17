@@ -74,15 +74,15 @@ create table CW2.trails (
 );
 GO
 
+create table CW2.feature (
+    feature_id int primary key identity(1,1),
+    feature_name varchar(255) not null
+);
+
 create table CW2.trail_features (
     trail_id int not null references CW2.trails(trail_id),
     feature_id int not null references CW2.feature(feature_id),
     primary key (trail_id, feature_id)
-);
-
-create table CW2.feature (
-    feature_id int primary key identity(1,1),
-    feature_name varchar(255) not null
 );
 
 create table CW2.location_point (

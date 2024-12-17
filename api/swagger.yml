@@ -38,4 +38,98 @@ components:
           type: string
 
 paths:
+  "/trails":
+    get:
+      tags: ["trails"]
+      operationId: "endpoints.trails.read_all"
+      summary: "Get all trails"
+      description: "Returns a list of all trails"
+      responses:
+        "200":
+          description: "A list of trails"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Trail"
+    post:
+      tags: ["trails"]
+      operationId: "endpoints.trails.create"
+      summary: "Create a new trail"
+      description: "Creates a new trail"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Trail"
+      responses:
+        "201":
+          description: "Trail created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+  "/trails/{trail_id}":
+    get:
+      tags: ["trails"]
+      operationId: "endpoints.trails.read_one"
+      summary: "Get a trail"
+      description: "Returns a trail"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the trail to return"
+      responses:
+        "200":
+          description: "A trail"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+    put:
+      tags: ["trails"]
+      operationId: "endpoints.trails.update"
+      summary: "Update a trail"
+      description: "Updates a trail"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the trail to update"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Trail"
+      responses:
+        "200":
+          description: "Trail updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+    delete:
+      tags: ["trails"]
+      operationId: "endpoints.trails.delete"
+      summary: "Delete a trail"
+      description: "Deletes a trail"
+      parameters:
+        - name: "trail_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the trail to delete"
+      responses:
+        "204":
+          description: "Trail deleted"
 
+        

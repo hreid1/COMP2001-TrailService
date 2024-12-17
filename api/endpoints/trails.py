@@ -18,6 +18,13 @@ def read_all():
     trails = Trail.query.all()
     return jsonify(trails_schema.dump(trails))
 
+def read_one(trail_id):
+    trail = Trail.query.get(trail_id)
+    if trail:
+        return trail_schema.jsonify(trail)
+    else:
+        abort(404, f"Trail with ID {trail_id} not found")
+
 def create():
     print("Called Create function of trail")
     trail = request.get_json()

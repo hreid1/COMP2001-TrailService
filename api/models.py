@@ -48,7 +48,7 @@ class Trail(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('CW2.owners.owner_id'), nullable=False)
     route_id = db.Column(db.Integer, db.ForeignKey('CW2.route_type.route_id'), nullable=False)
 
-    #features = db.relationship('Feature', secondary='CW2.trail_features', backref='trails', lazy=True)
+    features = db.relationship('Feature', secondary='CW2.trail_features', backref='trails', lazy=True)
     #trail_points = db.relationship('TrailPoints', backref='trails', lazy=True)
 
 class TrailSchema(ma.SQLAlchemyAutoSchema):
@@ -99,6 +99,34 @@ class RouteTypeSchema(ma.SQLAlchemyAutoSchema):
 
     route_id = fields.Integer(dump_only=True)
     route_type = fields.String(required=True)
+
+class Feature(db.Model):
+    __tablename__ = 'feature'
+    __table_args__ = {'schema': 'CW2', 'extend_existing': True}
+
+    feature_id = db.Column(db.Integer, primary_key=True)
+    feature_name = db.Column(db.String(50), nullable=False)
+
+    trails = db.relationship('Trail', secondary='CW2.trail_features', backref='feature', lazy=True)
+
+class FeatureSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Feature
+        load_instance = True
+        sqla_session = db.session
+
+    feature_id = fields.Integer(dump_only=True)
+    feature_name = fields.String(required=True)
+
+class TrailFeature(db.Model):
+    __tablename__ = 'trail_features'
+    __table_args__ = {'schema': 'CW2', 'extend_existing': True}
+
+    trail_id = db.Column(db.Integer, db.ForeignKey('CW2.trails.trail_id'), primary_key=True)
+    feature_id = db.Column(db.Integer, db.ForeignKey('CW2.feature.feature_id'), primary_key=True)
+
+    trail = db.relationship('Trail', backref='trail_features', lazy=True)
+    feature = db.relationship('Feature', backref='trail_features', lazy=True)
 
 
 trail_schema = TrailSchema()

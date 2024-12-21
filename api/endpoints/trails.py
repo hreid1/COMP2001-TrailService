@@ -2,6 +2,7 @@ from flask import abort, make_response, jsonify, request
 
 from config import db
 from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint
+from auth import authenticate_user
 
 # Trail
     # trail_id
@@ -47,6 +48,8 @@ from models import Trail, trail_schema, trails_schema, location_point_schema, Lo
     # Delete
         # Can only delete trail if admin/author of trail
 # Need to check user is admin before anything
+    # via auth.py
+        #
 
 
 def read_all():
@@ -73,11 +76,6 @@ def read_one(trail_id):
         ]
     })
 
-    
-    
- 
-
-
 
 def create():
     print("Called Create function of trail")
@@ -86,6 +84,9 @@ def create():
     db.session.add(new_trail)
     db.session.commit()
     return trail_schema.jsonify(new_trail), 201
+
+    # neeed to add trail_points
+    # need to add trail_features
 
 def update(trail_id):
     print("Called Update function of trail")

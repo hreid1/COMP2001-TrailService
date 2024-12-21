@@ -33,9 +33,9 @@
         -- location_point_id INT FK location_point(location_point_id)
         -- sequenceNumber INT 
 
+drop table if exists CW2.feature;
 drop table if exists CW2.trail_points;
 drop table if exists CW2.location_point;
-drop table if exists CW2.feature;
 drop table if exists CW2.trail_features;
 drop table if exists CW2.trails;
 drop table if exists CW2.route_type;

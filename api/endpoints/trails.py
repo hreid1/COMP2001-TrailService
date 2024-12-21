@@ -7,6 +7,17 @@ from models import Trail, trail_schema, trails_schema
     # Create
     # Read
         # Read one
+            # Need to return associated RouteType, Owner
+                # Via JOIN TABLES
+            # Tables
+                # Owner (owners)
+                    # owner_id
+                    # owner_name
+                    # email
+                    # role
+                # RouteType (route_type)
+                    # route_type_id
+                    # route_type
         # Read all
     # Update
     # Delete
@@ -19,11 +30,20 @@ def read_all():
     return jsonify(trails_schema.dump(trails))
 
 def read_one(trail_id):
-    trail = Trail.query.get(trail_id)
-    if trail:
-        return trail_schema.jsonify(trail)
-    else:
+    trail = Trail.query.filter(Trail.trail_id == trail_id).one_or_none()
+    if trail is None:
         abort(404, f"Trail with ID {trail_id} not found")
+
+    return jsonify({
+        "trail": trail_schema.dump(trail),
+        "route_type": trail.route_type.route_type,
+        "owners": trail.owners.owner_name
+    })
+    
+    # need to return associated route type and owner as well as trail data
+ 
+
+
 
 def create():
     print("Called Create function of trail")

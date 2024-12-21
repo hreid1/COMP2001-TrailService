@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: "Trail Service API"
   version: "1.0.0"
-  description: "A simple API to manage trails"
+  description: "A simple API to manage trails and owners"
   contact:
     name: "Henry Reid"
     email: "henryreid05@gmail.com"
@@ -31,8 +31,36 @@ components:
           type: string
         length:
           type: number
+          format: float
         elevation_gain:
           type: number
+          format: float
+        description:
+          type: string
+
+    Owner:
+      type: object
+      properties:
+        owner_id:
+          type: integer
+        owner_name:
+          type: string
+        email:
+          type: string
+        role:
+          type: boolean
+
+    LocationPoint:
+      type: object
+      properties:
+        location_point_id:
+          type: integer
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
         description:
           type: string
 
@@ -70,12 +98,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Trail"
+
   "/trails/{trail_id}":
     get:
       tags: ["trails"]
       operationId: "endpoints.trails.read_one"
       summary: "Get a trail"
-      description: "Returns a trail"
+      description: "Returns a trail by ID"
       parameters:
         - name: "trail_id"
           in: "path"
@@ -94,7 +123,7 @@ paths:
       tags: ["trails"]
       operationId: "endpoints.trails.update"
       summary: "Update a trail"
-      description: "Updates a trail"
+      description: "Updates a trail by ID"
       parameters:
         - name: "trail_id"
           in: "path"
@@ -119,7 +148,7 @@ paths:
       tags: ["trails"]
       operationId: "endpoints.trails.delete"
       summary: "Delete a trail"
-      description: "Deletes a trail"
+      description: "Deletes a trail by ID"
       parameters:
         - name: "trail_id"
           in: "path"
@@ -130,5 +159,102 @@ paths:
       responses:
         "204":
           description: "Trail deleted"
+  
+  "/owners":
+    get:
+      tags: ["owners"]
+      operationId: "endpoints.owners.read_all"
+      summary: "Get all owners"
+      description: "Returns a list of all owners"
+      responses:
+        "200":
+          description: "A list of owners"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Owner"
+    post:
+      tags: ["owners"]
+      operationId: "endpoints.owners.create"
+      summary: "Create a new owner"
+      description: "Creates a new owner"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Owner"
+      responses:
+        "201":
+          description: "Owner created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
 
-        
+  "/owners/{owner_id}":
+    get:
+      tags: ["owners"]
+      operationId: "endpoints.owners.read_one"
+      summary: "Get an owner"
+      description: "Returns an owner by ID"
+      parameters:
+        - name: "owner_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the owner to return"
+      responses:
+        "200":
+          description: "An owner"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
+    put:
+      tags: ["owners"]
+      operationId: "endpoints.owners.update"
+      summary: "Update an owner"
+      description: "Updates an owner by ID"
+      parameters:
+        - name: "owner_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the owner to update"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Owner"
+      responses:
+        "200":
+          description: "Owner updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Owner"
+    delete:
+      tags: ["owners"]
+      operationId: "endpoints.owners.delete"
+      summary: "Delete an owner"
+      description: "Deletes an owner by ID"
+      parameters:
+        - name: "owner_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+          description: "ID of the owner to delete"
+      responses:
+        "204":
+          description: "Owner deleted"
+
+
+
+

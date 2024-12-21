@@ -110,8 +110,18 @@ def update(trail_id):
 
 def delete(trail_id):
     print("Called Delete function of trail")
+    # Authenticate the user
+    user_data = authenticate_user(request.headers.get('Authorization'))
+    if user_data is None:
+        abort(401, "Unauthorized access")
+
+    # Check if user is admin or the owner of the trail
     existing_trail = Trail.query.get(trail_id)
     if existing_trail:
+        if user_data['role'] != 'admin' and user_data['user_id'] != existing_trail.owner_id:
+            abort(403, "You do not have permission to delete this trail")
+
+        # Proceed with deletion if authorized
         db.session.delete(existing_trail)
         db.session.commit()
         return make_response(f"Trail with ID {trail_id} successfully deleted", 204)

@@ -2,26 +2,6 @@ from flask import request, abort
 import requests
 
 AUTH_URL = 'https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users'
-
-email = 'tim@plymouth.ac.uk'
-password = 'COMP2001!'
-
-credentials = {
-    'email': email,
-    'password': password
-}
-
-def authenticate_user(email, password):
-    response = requests.post(AUTH_URL, json=credentials)
-    if response.status_code != 200:
-        try:
-            json_response = response.json()
-            print("Authenticated successfully", json_response)
-        except requests.JSONDecodeError:
-            print("Failed to authenticate", response.text)
-    else:
-        print(f"Authentication failed with status code {response.status_code}")
-        print("Failed to authenticate", response.text)
         
 def authenticate_request():
     auth_data = request.headers.get('Authorization')

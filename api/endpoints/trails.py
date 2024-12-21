@@ -1,7 +1,22 @@
 from flask import abort, make_response, jsonify, request
 
 from config import db
-from models import Trail, trail_schema, trails_schema
+from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint
+
+# Trail
+    # trail_id
+    # name
+    # difficulty
+    # location
+    # length
+    # elevation_gain
+    # description
+    # owner_id
+    # route_id
+
+    # Relationships
+    # trail_points = db.relationship(TrailPoints, backref='trails_trail_points', single_parent=True)
+
 
 # CRUD functions
     # Create
@@ -18,6 +33,15 @@ from models import Trail, trail_schema, trails_schema
                 # RouteType (route_type)
                     # route_type_id
                     # route_type
+                # TrailPoints (trail_points) JOIN TABLE
+                    # trail_id
+                    # location_point_id
+                    # sequence_number
+                # LocationPoint (location_point)
+                    # location_point_id
+                    # longitude
+                    # latitude
+                    # description
         # Read all
     # Update
     # Delete
@@ -37,10 +61,20 @@ def read_one(trail_id):
     return jsonify({
         "trail": trail_schema.dump(trail),
         "route_type": trail.route_type.route_type,
-        "owners": trail.owners.owner_name
+        "owner": trail.owners.owner_name,
+        "trail_points": [
+            {
+                "location_point": location_point_schema.dump(
+                    LocationPoint.query.get(trail_point.location_point_id)
+                ),
+                "sequence_number": trail_point.sequence_number
+            }
+            for trail_point in trail.trail_points
+        ]
     })
+
     
-    # need to return associated route type and owner as well as trail data
+    
  
 
 

@@ -34,6 +34,7 @@
         -- sequenceNumber INT 
 
 drop table if exists CW2.feature;
+
 drop table if exists CW2.trail_points;
 drop table if exists CW2.location_point;
 drop table if exists CW2.trail_features;
@@ -95,7 +96,7 @@ create table CW2.location_point (
 create table CW2.trail_points (
     trail_id int not null references CW2.trails(trail_id),
     location_point_id int not null references CW2.location_point(location_point_id),
-    sequenceNumber int not null,
+    sequence_number int not null,
     primary key (trail_id, location_point_id)
 );
 GO
@@ -132,16 +133,40 @@ INSERT INTO CW2.trail_features (trail_id, feature_id) VALUES
 (2, 2);
 GO
 
--- Insert sample data into the LocationPoint table
 INSERT INTO CW2.location_point (longitude, latitude, description) VALUES
 (-123.3656, 48.4284, 'Point A'),
-(-123.3657, 48.4285, 'Point B');
+(-123.3657, 48.4285, 'Point B'),
+(-123.3658, 48.4286, 'Point C'),
+(-123.3659, 48.4287, 'Point D'),
+(-123.3660, 48.4288, 'Point E'),
+(-123.3661, 48.4289, 'Point F'),
+(-123.3662, 48.4290, 'Point G'),
+(-123.3663, 48.4291, 'Point H'),
+(-123.3664, 48.4292, 'Point I'),
+(-123.3665, 48.4293, 'Point J'),
+(-123.3666, 48.4294, 'Point K'),
+(-123.3667, 48.4295, 'Point L'),
+(-123.3668, 48.4296, 'Point M'),
+(-123.3669, 48.4297, 'Point N'),
+(-123.3670, 48.4298, 'Point O');
 GO
 
 -- Insert sample data into the TrailPoints join table
-INSERT INTO CW2.trail_points (trail_id, location_point_id, sequenceNumber) VALUES
+INSERT INTO CW2.trail_points (trail_id, location_point_id, sequence_number) VALUES
 (1, 1, 1),
-(1, 2, 2);
+(1, 2, 2),
+(1, 3, 3),
+(1, 4, 4),
+(1, 5, 5),
+(2, 6, 1),
+(2, 7, 2),
+(2, 8, 3),
+(2, 9, 4),
+(2, 10, 5),
+(1, 11, 6),
+(1, 12, 7),
+(1, 13, 8),
+(1, 14, 9),
+(1, 15, 10);
 GO
-
 

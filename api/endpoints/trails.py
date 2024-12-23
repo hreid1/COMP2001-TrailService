@@ -1,7 +1,7 @@
 from flask import abort, make_response, jsonify, request
 
 from config import db
-from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature
+from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature, TrailFeature, TrailPoints
 from auth import authenticate_request
 
 # Trail
@@ -124,20 +124,17 @@ def update(trail_id):
 
 def delete(trail_id):
     print("Called Delete function of trail")
-    # Authenticate the user
-    user_data = authenticate_request(request.headers.get('Authorization'))
-    if user_data is None:
-        abort(401, "Unauthorized access")
 
-    # Check if user is admin or the owner of the trail
+    # Check if the trail exists
     existing_trail = Trail.query.get(trail_id)
-    if existing_trail:
-        if user_data['role'] != 'admin' and user_data['user_id'] != existing_trail.owner_id:
-            abort(403, "You do not have permission to delete this trail")
-
-        # Proceed with deletion if authorized
-        db.session.delete(existing_trail)
-        db.session.commit()
-        return make_response(f"Trail with ID {trail_id} successfully deleted", 204)
-    else:
+    if not existing_trail:
         abort(404, f"Trail with ID {trail_id} not found")
+
+    # Delete associated TrailPoints and TrailFeatures
+    TrailPoints.query.filter_by(trail_id=trail_id).delete()
+    TrailFeature.query.filter_by(trail_id=trail_id).delete()
+
+    # Delete the trail itself
+    db.session.delete(existing_trail)
+    db.session.commit()
+    return make_response(f"Trail with ID {trail_id} successfully deleted", 204)

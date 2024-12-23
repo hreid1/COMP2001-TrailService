@@ -16,13 +16,7 @@ components:
   schemas:
     Trail:
       type: object
-      properties: 
-        trail_id:
-          type: integer
-        route_id:
-          type: integer
-        owner_id:
-          type: integer
+      properties:
         name:
           type: string
         difficulty:
@@ -37,9 +31,28 @@ components:
           format: float
         description:
           type: string
+        owner_id:
+          type: integer
+        route_id:
+          type: integer
+      required:
+        - name
+        - difficulty
+        - location
+        - length
+        - elevation_gain
+        - description
+        - owner_id
+        - route_id
 
-
-
+  parameters:
+    trail_id:
+      name: "trail_id"
+      in: "path"
+      required: true
+      schema:
+        type: "integer"
+      description: "ID of the trail to return"
 
 paths:
   "/trails":
@@ -75,27 +88,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Trail"
+        "400":
+          description: "Bad request - Missing required fields"
+        "500":
+          description: "Internal server error"
 
   "/trails/{trail_id}":
-    get:
-      tags: ["trails"]
-      operationId: "endpoints.trails.read_one"
-      summary: "Get a trail"
-      description: "Returns a trail by ID"
-      parameters:
-        - name: "trail_id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-          description: "ID of the trail to return"
-      responses:
-        "200":
-          description: "A trail"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Trail"
     put:
       tags: ["trails"]
       operationId: "endpoints.trails.update"
@@ -136,4 +134,3 @@ paths:
       responses:
         "204":
           description: "Trail deleted"
-  

@@ -103,8 +103,13 @@ class TrailSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         sqla_session = db.session
 
-    owner_id = fields.Integer(required = True)
-    route_id = fields.Integer(required = True)
+    owner_id = fields.Integer(required=True)
+    route_id = fields.Integer(required=True)
+
+    # Nested fields for trail_points and trail_features
+    trail_points = fields.Nested('TrailPointsSchema', many=True, required=False)
+    trail_features = fields.Nested('TrailFeatureSchema', many=True, required=False)
+
 
 class Feature(db.Model):
     __tablename__ = 'feature'

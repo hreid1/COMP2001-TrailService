@@ -13,33 +13,54 @@ servers:
   - url: "/api"
 
 components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-
   schemas:
     Trail:
       type: object
       properties:
         name:
           type: string
+          description: "Name of the trail"
         difficulty:
           type: string
+          description: "Difficulty level of the trail (e.g., Easy, Medium, Hard)"
         location:
           type: string
+          description: "Location of the trail"
         length:
           type: number
           format: float
+          description: "Length of the trail in miles or kilometers"
         elevation_gain:
           type: number
           format: float
+          description: "Elevation gain of the trail in feet or meters"
         description:
           type: string
+          description: "A detailed description of the trail"
         owner_id:
           type: integer
+          description: "ID of the trail's owner"
         route_id:
           type: integer
+          description: "ID of the trail's route type"
+        trail_points:
+          type: array
+          items:
+            type: object
+            properties:
+              location_point_id:
+                type: integer
+              sequence_number:
+                type: integer
+          description: "List of location points for the trail"
+        trail_features:
+          type: array
+          items:
+            type: object
+            properties:
+              feature_id:
+                type: integer
+          description: "List of features associated with the trail"
       required:
         - name
         - difficulty
@@ -50,6 +71,29 @@ components:
         - owner_id
         - route_id
 
+
+    TrailPoints:
+      type: object
+      properties:
+        location_point_id:
+          type: integer
+          description: "ID of the location point"
+        sequence_number:
+          type: integer
+          description: "The order of the location point in the trail"
+      required:
+        - location_point_id
+        - sequence_number
+
+    TrailFeatures:
+      type: object
+      properties:
+        feature_id:
+          type: integer
+          description: "ID of the feature"
+      required:
+        - feature_id
+        
   parameters:
     trail_id:
       name: "trail_id"
@@ -59,8 +103,6 @@ components:
         type: "integer"
       description: "ID of the trail to return"
 
-
-
 paths:
   "/trails":
     get:
@@ -68,8 +110,6 @@ paths:
       operationId: "endpoints.trails.read_all"
       summary: "Get all trails"
       description: "Returns a list of all trails"
-      security:
-        - basicAuth: []
       responses:
         "200":
           description: "A list of trails"
@@ -83,7 +123,7 @@ paths:
       tags: ["trails"]
       operationId: "endpoints.trails.create"
       summary: "Create a new trail"
-      description: "Creates a new trail"
+      description: "Creates a new trail, optionally with trail points and features"
       requestBody:
         required: true
         content:
@@ -92,15 +132,36 @@ paths:
               $ref: "#/components/schemas/Trail"
       responses:
         "201":
-          description: "Trail created"
+          description: "Trail created successfully"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Trail"
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Trail created successfully"
+                  trail:
+                    $ref: "#/components/schemas/Trail"
         "400":
-          description: "Bad request - Missing required fields"
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid trail data"
         "500":
-          description: "Internal server error"
+          description: "Server error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   "/trails/{trail_id}":
     put:

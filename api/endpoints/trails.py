@@ -1,8 +1,7 @@
 from flask import abort, make_response, jsonify, request
 
 from config import db
-from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature, TrailFeature, TrailPoints
-
+from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature, TrailFeature, TrailPoints, Feature, RouteType, Owner, trail_points_schema, trail_feature_schema
 
 # Trail
     # trail_id
@@ -73,7 +72,7 @@ def read_one(trail_id):
         }
         for trail_feature in trail.trail_features
     ]
-    
+
     return jsonify({
         "trail": trail_schema.dump(trail),
         "route_type": trail.route_type.route_type,
@@ -92,6 +91,9 @@ def read_one(trail_id):
 
 
 
+from flask import request, jsonify, abort
+from models import Trail, TrailPoints, TrailFeature, db, trail_schema
+
 def create():
     print("Called Create function of trail")
 
@@ -104,18 +106,37 @@ def create():
         if field not in trail_data:
             abort(400, f"Missing required field: {field}")
 
+    # Extract nested trail points and features
+    trail_points_data = trail_data.pop('trail_points', [])
+    trail_features_data = trail_data.pop('trail_features', [])
+
     try:
         # Create the new trail object from the provided data
         new_trail = trail_schema.load(trail_data, session=db.session)
 
         # Add the trail to the session and commit to save it
         db.session.add(new_trail)
-        db.session.commit()  # This will save the trail and assign a trail_id
+        db.session.commit()
 
-        # Now that the trail is saved, we can retrieve the trail_id
+        # Retrieve the newly created trail_id
         trail_id = new_trail.trail_id
 
-        # Return the newly created trail's data (without points or features)
+        # Handle trail points
+        for point in trail_points_data:
+            point['trail_id'] = trail_id
+            trail_point = trail_points_schema.load(point, session=db.session)
+            db.session.add(trail_point)
+
+        # Handle trail features
+        for feature in trail_features_data:
+            feature['trail_id'] = trail_id
+            trail_feature = trail_feature_schema.load(feature, session=db.session)
+            db.session.add(trail_feature)
+
+        # Commit the nested relationships
+        db.session.commit()
+
+        # Return the newly created trail's data
         return trail_schema.jsonify(new_trail), 201
 
     except Exception as e:
@@ -123,8 +144,6 @@ def create():
         print(f"Error occurred during trail creation: {e}")
         abort(500, "An error occurred while creating the trail")
 
-        # Need to add TrailPoints and TrailFeatures
-            # Modify Swagger to implement
 
 
 

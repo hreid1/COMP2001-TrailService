@@ -28,7 +28,5 @@ def owner_exists(req: Request):
     }
 
     response = requests.post(auth_url, json=body)
-
     response = response.json()
-
     return response[1] == 'True'

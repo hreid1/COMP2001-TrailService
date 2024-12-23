@@ -13,6 +13,11 @@ servers:
   - url: "/api"
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
   schemas:
     Trail:
       type: object
@@ -54,6 +59,8 @@ components:
         type: "integer"
       description: "ID of the trail to return"
 
+
+
 paths:
   "/trails":
     get:
@@ -61,6 +68,8 @@ paths:
       operationId: "endpoints.trails.read_all"
       summary: "Get all trails"
       description: "Returns a list of all trails"
+      security:
+        - basicAuth: []
       responses:
         "200":
           description: "A list of trails"
@@ -123,14 +132,11 @@ paths:
       tags: ["trails"]
       operationId: "endpoints.trails.delete"
       summary: "Delete a trail"
-      description: "Deletes a trail by ID"
+      description: "Deletes a trail by ID."
       parameters:
-        - name: "trail_id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-          description: "ID of the trail to delete"
+        - $ref: "#/components/parameters/trail_id"
       responses:
         "204":
           description: "Trail deleted"
+        "404":
+          description: "Not Found - Trail with the given ID doesn't exist"

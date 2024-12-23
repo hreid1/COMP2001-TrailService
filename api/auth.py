@@ -1,37 +1,34 @@
-from flask import request, abort
 import requests
+from flask import request, Request
+from models import Owner  # Assuming you have a model defined for the Owner table
+from config import db
 
-AUTH_URL = 'https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users'
+# Define the authentication URL
+auth_url = 'https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users'
 
-# Sample User Data
-users = {
-    "grace@plymouth.ac.uk": {"password": "ISAD123!", "role": "admin"},
-    "ada@plymouth.ac.uk": {"password": "COMP2001!", "role": "user"},
-    "tim@plymouth.ac.uk": {"password": "insecurePassword", "role": "user"}
-}
+# is_owner_admin
+def is_admin(owner):
+    return owner.role == 'admin'
 
-def authenticate_request():
-    auth_data = request.headers.get('Authorization')
-    if not auth_data:
-        abort(401, "No Authorization header")
+def get_owner(req: Request):
+    email = request.headers.get('email')
+    owner = Owner.query.filter_by(email=email).one_or_none()
+    return owner
+
+def owner_exists(req: Request):
+    email = request.headers.get('email')
+    password = req.headers.get('password')
+
+    if email is None or password is None:
+        return False
     
-    try:
-        email, password = auth_data.split(':')
-    except ValueError:
-        abort(401, "Invalid Authorization header")
+    body = {
+        'email': email,
+        'password': password
+    }
 
-    # Check if the email exists in our hardcoded user data
-    user = users.get(email)
-    if not user or user['password'] != password:
-        abort(401, "Invalid email or password")
-    
-    # Simulate a response to indicate successful authentication
-    return {"email": email, "role": user['role'], "user_id": email}
+    response = requests.post(auth_url, json=body)
 
-def check_admin(user):
-    if user['role'] != 'admin':
-        abort(403, "User is not an admin")
+    response = response.json()
 
-def check_owner(user, trail):
-    if user['user_id'] != trail['owner_id']:
-        abort(403, "User is not the owner of the trail")
+    return response[1] == 'True'

@@ -2,7 +2,7 @@ from flask import abort, make_response, jsonify, request
 
 from config import db
 from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature, TrailFeature, TrailPoints
-from auth import authenticate_request, check_admin, check_owner
+
 
 # Trail
     # trail_id
@@ -17,7 +17,6 @@ from auth import authenticate_request, check_admin, check_owner
 
     # Relationships
     # trail_points = db.relationship(TrailPoints, backref='trails_trail_points', single_parent=True)
-
 
 # CRUD functions
     # Create
@@ -49,10 +48,13 @@ from auth import authenticate_request, check_admin, check_owner
         # Can only delete trail if admin/author of trail
 # Need to check user is admin before anything
     # via auth.py
-        #
-
+        # Check if user is admin
+        # Check if user exists
+        # Check if user is authenticated
+        # Check if user is authorised to perform action
 
 def read_all():
+    # Query all trails
     trails = Trail.query.all()
     return jsonify(trails_schema.dump(trails))
 
@@ -71,8 +73,7 @@ def read_one(trail_id):
         }
         for trail_feature in trail.trail_features
     ]
-
-    # Prepare the response
+    
     return jsonify({
         "trail": trail_schema.dump(trail),
         "route_type": trail.route_type.route_type,
@@ -197,18 +198,10 @@ def update(trail_id):
 def delete(trail_id):
     print("Called Delete function of trail")
 
-    # Authenticate the user
-    user_data = authenticate_request()
-
     # Fetch the trail
     existing_trail = Trail.query.get(trail_id)
     if not existing_trail:
         abort(404, f"Trail with ID {trail_id} not found")
-
-    # Check if the user is authorized to delete the trail
-    check_admin(user_data)  # Allow only admins
-    # OR
-    check_owner(user_data, {"owner_id": existing_trail.owner_id})  # Allow only the owner
 
     # Delete associated TrailPoints and TrailFeatures
     TrailPoints.query.filter_by(trail_id=trail_id).delete()
@@ -217,4 +210,5 @@ def delete(trail_id):
     # Delete the trail itself
     db.session.delete(existing_trail)
     db.session.commit()
+
     return make_response(f"Trail with ID {trail_id} successfully deleted", 204)

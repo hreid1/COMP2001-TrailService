@@ -45,7 +45,6 @@ from marshmallow import fields
     # location_point_id -> LocationPoint.location_point_id
     # sequenceNumber
 
-
 class TrailPoints(db.Model):
     __tablename__ = 'trail_points'
     __table_args__ = {'schema': 'CW2', 'extend_existing': True}
@@ -106,10 +105,8 @@ class TrailSchema(ma.SQLAlchemyAutoSchema):
     owner_id = fields.Integer(required=True)
     route_id = fields.Integer(required=True)
 
-    # Nested fields for trail_points and trail_features
     trail_points = fields.Nested('TrailPointsSchema', many=True, required=False)
     trail_features = fields.Nested('TrailFeatureSchema', many=True, required=False)
-
 
 class Feature(db.Model):
     __tablename__ = 'feature'

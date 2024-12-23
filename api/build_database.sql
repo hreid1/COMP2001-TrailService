@@ -103,36 +103,141 @@ GO
 
 -- Insert data
 
--- Insert sample data into the Owner table
+-- Owners
+    -- Name: Grace Hopper
+        -- Email: grace@plymouth.ac.uk
+        -- Password: ISAD123!
+        -- Role: Admin
+    -- Name: Tim Berners-Lee
+        -- Email: tim@plymouth.ac.uk
+        -- Password: COMP2001!
+        -- Role: User
+    -- Name: Ada Lovelace
+        -- Email: ada@plymouth.ac.uk
+        -- Password: insecurePassword
+        -- Role: User
+
+-- Route Types
+    -- Loop
+    -- Out and Back
+    -- Point to Point
+
+-- Trails
+    -- Name: Plymbridge Circular
+        -- Owner: Grace Hopper
+        -- Route Type: Loop
+        -- Difficulty: Easy
+        -- Location: Plymbridge Woods
+        -- Length: 5.00 miles
+        -- Elevation Gain: 100.00 metres
+        -- Description: A circular walk around Plymbridge Woods
+    -- Name: Plymouth Waterfront
+        -- Owner: Tim Berners-Lee
+        -- Route Type: Out and Back
+        -- Difficulty: Moderate
+        -- Location: Plymouth Hoe
+        -- Length: 10.00 miles
+        -- Elevation Gain: 200.00 metres
+        -- Description: A walk along the waterfront with views of the sea
+
+-- Features
+    -- Waterfall
+    -- Scenic View
+    -- Wildlife
+
+-- TrailFeatures
+    -- Plymbridge Circular: Waterfall
+    -- Plymouth Waterfront: Scenic View
+
+-- Location Points
+    -- Point A: -123.3656, 48.4284
+    -- Point B: -123.3657, 48.4285
+    -- Point C: -123.3658, 48.4286
+    -- Point D: -123.3659, 48.4287
+    -- Point E: -123.3660, 48.4288
+    -- Point F: -123.3661, 48.4289
+    -- Point G: -123.3662, 48.4290
+    -- Point H: -123.3663, 48.4291
+    -- Point I: -123.3664, 48.4292
+    -- Point J: -123.3665, 48.4293
+    -- Point K: -123.3666, 48.4294
+    -- Point L: -123.3667, 48.4295
+    -- Point M: -123.3668, 48.4296
+    -- Point N: -123.3669, 48.4297
+    -- Point O: -123.3670, 48.4298
+
+-- Trail Points
+    -- Plymbridge Circular
+        -- Point A
+        -- Point B
+        -- Point C
+        -- Point D
+        -- Point E
+        -- Point K
+        -- Point L
+        -- Point M
+        -- Point N
+        -- Point O
+    -- Plymouth Waterfront
+        -- Point F
+        -- Point G
+        -- Point H
+        -- Point I
+        -- Point J
+
+-- Trail Points
+    -- Plymbridge Circular
+        -- Point A
+        -- Point B
+        -- Point C
+        -- Point D
+        -- Point E
+        -- Point K
+        -- Point L
+        -- Point M
+        -- Point N
+        -- Point O
+    -- Plymouth Waterfront
+        -- Point F
+        -- Point G
+        -- Point H
+        -- Point I
+        -- Point J
+
+-- Insert sample data for owners
 INSERT INTO CW2.owners (owner_name, email, role) VALUES
-('John Doe', 'john.doe@example.com', 1),
-('Jane Smith', 'jane.smith@example.com', 0);
+('Grace Hopper', 'grace@plymouth.ac.uk', 1), -- Admin
+('Tim Berners-Lee', 'tim@plymouth.ac.uk', 0), -- User
+('Ada Lovelace', 'ada@plymouth.ac.uk', 0); -- User
 GO
 
--- Insert sample data into the RouteType table
+-- Insert sample data for route types
 INSERT INTO CW2.route_type (route_type) VALUES
 ('Loop'),
-('Out and Back');
+('Out and Back'),
+('Point to Point');
 GO
 
--- Insert sample data into the Trail table
+-- Insert sample data for trails
 INSERT INTO CW2.trails (owner_id, route_id, name, difficulty, location, length, elevation_gain, description) VALUES
-(1, 1, 'Trail A', 'Easy', 'Location A', 5.00, 100.00, 'Description A'),
-(2, 2, 'Trail B', 'Moderate', 'Location B', 10.00, 200.00, 'Description B');
+(1, 1, 'Plymbridge Circular', 'Easy', 'Plymbridge Woods', 5.00, 100.00, 'A circular walk around Plymbridge Woods'),
+(2, 2, 'Plymouth Waterfront', 'Moderate', 'Plymouth Hoe', 10.00, 200.00, 'A walk along the waterfront with views of the sea');
 GO
 
--- Insert sample data into the Feature table
+-- Insert sample data for features
 INSERT INTO CW2.feature (feature_name) VALUES
 ('Waterfall'),
-('Scenic View');
+('Scenic View'),
+('Wildlife');
 GO
 
--- Insert sample data into the TrailFeature join table
+-- Insert sample data for trail_features (many-to-many relation between trails and features)
 INSERT INTO CW2.trail_features (trail_id, feature_id) VALUES
-(1, 1),
-(2, 2);
+(1, 1), -- Plymbridge Circular has Waterfall
+(2, 2); -- Plymouth Waterfront has Scenic View
 GO
 
+-- Insert sample data for location_points (coordinates for the points)
 INSERT INTO CW2.location_point (longitude, latitude, description) VALUES
 (-123.3656, 48.4284, 'Point A'),
 (-123.3657, 48.4285, 'Point B'),
@@ -151,22 +256,21 @@ INSERT INTO CW2.location_point (longitude, latitude, description) VALUES
 (-123.3670, 48.4298, 'Point O');
 GO
 
--- Insert sample data into the TrailPoints join table
+-- Insert sample data for trail_points (many-to-many relation between trails and location points)
 INSERT INTO CW2.trail_points (trail_id, location_point_id, sequence_number) VALUES
 (1, 1, 1),
 (1, 2, 2),
 (1, 3, 3),
 (1, 4, 4),
 (1, 5, 5),
-(2, 6, 1),
-(2, 7, 2),
-(2, 8, 3),
-(2, 9, 4),
-(2, 10, 5),
 (1, 11, 6),
 (1, 12, 7),
 (1, 13, 8),
 (1, 14, 9),
-(1, 15, 10);
+(1, 15, 10),
+(2, 6, 1),
+(2, 7, 2),
+(2, 8, 3),
+(2, 9, 4),
+(2, 10, 5);
 GO
-

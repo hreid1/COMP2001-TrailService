@@ -1,8 +1,8 @@
 from flask import abort, make_response, jsonify, request
 
 from config import db
-from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint
-from auth import authenticate_user
+from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature
+from auth import authenticate_request
 
 # Trail
     # trail_id
@@ -57,10 +57,22 @@ def read_all():
     return jsonify(trails_schema.dump(trails))
 
 def read_one(trail_id):
+    # Query the trail by ID
     trail = Trail.query.filter(Trail.trail_id == trail_id).one_or_none()
+    
     if trail is None:
         abort(404, f"Trail with ID {trail_id} not found")
 
+    # Fetch associated features using the TrailFeature relationship
+    trail_features = [
+        {
+            "feature_id": trail_feature.feature_id,
+            "feature_name": Feature.query.get(trail_feature.feature_id).feature_name
+        }
+        for trail_feature in trail.trail_features
+    ]
+
+    # Prepare the response
     return jsonify({
         "trail": trail_schema.dump(trail),
         "route_type": trail.route_type.route_type,
@@ -73,8 +85,10 @@ def read_one(trail_id):
                 "sequence_number": trail_point.sequence_number
             }
             for trail_point in trail.trail_points
-        ]
+        ],
+        "features": trail_features
     })
+
 
 
 def create():
@@ -111,7 +125,7 @@ def update(trail_id):
 def delete(trail_id):
     print("Called Delete function of trail")
     # Authenticate the user
-    user_data = authenticate_user(request.headers.get('Authorization'))
+    user_data = authenticate_request(request.headers.get('Authorization'))
     if user_data is None:
         abort(401, "Unauthorized access")
 

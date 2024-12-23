@@ -64,6 +64,22 @@ class TrailPointsSchema(ma.SQLAlchemyAutoSchema):
     location_point_id = fields.Integer(required=True)
     sequence_number = fields.Integer(required=True)
 
+class TrailFeature(db.Model):
+    __tablename__ = 'trail_features'
+    __table_args__ = {'schema': 'CW2', 'extend_existing': True}
+
+    trail_id = db.Column(db.Integer, db.ForeignKey('CW2.trails.trail_id'), primary_key=True)
+    feature_id = db.Column(db.Integer, db.ForeignKey('CW2.feature.feature_id'), primary_key=True)
+
+class TrailFeatureSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TrailFeature
+        load_instance = True
+        sqla_session = db.session
+
+    trail_id = fields.Integer(required=True)
+    feature_id = fields.Integer(required=True)
+
 class Trail(db.Model):
     __tablename__ = 'trails'
     __table_args__ = {'schema': 'CW2', 'extend_existing': True}
@@ -78,7 +94,7 @@ class Trail(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('CW2.owners.owner_id'), nullable=False)
     route_id = db.Column(db.Integer, db.ForeignKey('CW2.route_type.route_id'), nullable=False)
 
-    #trail_features = db.relationship(TrailFeature, backref='trails_trail_features', single_parent=True)
+    trail_features = db.relationship(TrailFeature, backref='trails_trail_features', single_parent=True)
     trail_points = db.relationship(TrailPoints, backref='trails_trail_points', single_parent=True)
 
 class TrailSchema(ma.SQLAlchemyAutoSchema):
@@ -89,6 +105,24 @@ class TrailSchema(ma.SQLAlchemyAutoSchema):
 
     owner_id = fields.Integer(required = True)
     route_id = fields.Integer(required = True)
+
+class Feature(db.Model):
+    __tablename__ = 'feature'
+    __table_args__ = {'schema': 'CW2', 'extend_existing': True}
+
+    feature_id = db.Column(db.Integer, primary_key=True)
+    feature_name = db.Column(db.String(50), nullable=False)
+
+    trail_features = db.relationship(TrailFeature, backref='feature_trail_features', single_parent=True)
+
+class FeatureSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Feature
+        load_instance = True
+        sqla_session = db.session
+
+    feature_id = fields.Integer(dump_only=True)
+    feature_name = fields.String(required=True)
 
 class LocationPoint(db.Model):
     __tablename__ = 'location_point'
@@ -156,11 +190,16 @@ owners_schema = OwnerSchema(many=True)
 route_type_schema = RouteTypeSchema()
 route_types_schema = RouteTypeSchema(many=True)
 
-
 location_point_schema = LocationPointSchema()
 location_points_schema = LocationPointSchema(many=True)
 
 trail_points_schema = TrailPointsSchema()
+
+feature_schema = FeatureSchema()
+features_schema = FeatureSchema(many=True)
+
+trail_feature_schema = TrailFeatureSchema()
+
 
 
 

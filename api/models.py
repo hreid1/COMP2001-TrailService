@@ -150,7 +150,7 @@ class Owner(db.Model):
     owner_id = db.Column(db.Integer, primary_key=True)
     owner_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    role = db.Column(db.Boolean, nullable=False)
+    role = db.Column(db.Text, nullable=False)
 
     trails = db.relationship('Trail', backref='owners', lazy=True)
 

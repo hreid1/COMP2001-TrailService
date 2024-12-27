@@ -71,7 +71,6 @@ components:
         - owner_id
         - route_id
 
-
     TrailPoints:
       type: object
       properties:
@@ -93,7 +92,13 @@ components:
           description: "ID of the feature"
       required:
         - feature_id
-        
+  
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: "Basic Authentication with email and password"
+
   parameters:
     trail_id:
       name: "trail_id"
@@ -164,6 +169,22 @@ paths:
                     type: string
 
   "/trails/{trail_id}":
+    get:
+      tags: ["trails"]
+      operationId: "endpoints.trails.read_one"
+      summary: "Get a trail by ID"
+      description: "Returns a trail by ID"
+      parameters:
+        - $ref: "#/components/parameters/trail_id"
+      responses:
+        "200":
+          description: "A trail"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trail"
+        "404":
+          description: "Not Found - Trail with the given ID doesn't exist"
     put:
       tags: ["trails"]
       operationId: "endpoints.trails.update"
@@ -196,6 +217,8 @@ paths:
       description: "Deletes a trail by ID."
       parameters:
         - $ref: "#/components/parameters/trail_id"
+      security:
+        - BasicAuth: []
       responses:
         "204":
           description: "Trail deleted"

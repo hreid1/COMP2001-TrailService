@@ -2,6 +2,7 @@ from flask import abort, make_response, jsonify, request
 
 from config import db
 from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature, TrailFeature, TrailPoints, Feature, RouteType, Owner, trail_points_schema, trail_feature_schema
+from auth import get_owner_by_email, authenticate_user
 
 # Trail
     # trail_id
@@ -217,17 +218,45 @@ def update(trail_id):
 def delete(trail_id):
     print("Called Delete function of trail")
 
-    # Fetch the trail
+    # only admins or owners of the trail can delete the trail
+
+    # Step 2: Fetch the trail by ID
     existing_trail = Trail.query.get(trail_id)
     if not existing_trail:
         abort(404, f"Trail with ID {trail_id} not found")
 
-    # Delete associated TrailPoints and TrailFeatures
+    # Step 3: Delete associated TrailPoints and TrailFeatures
     TrailPoints.query.filter_by(trail_id=trail_id).delete()
     TrailFeature.query.filter_by(trail_id=trail_id).delete()
 
-    # Delete the trail itself
+    # Step 4: Delete the trail itself
     db.session.delete(existing_trail)
     db.session.commit()
 
+    # Step 5: Return a success message
     return make_response(f"Trail with ID {trail_id} successfully deleted", 204)
+
+def check_owner():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    # Step 1: Retrieve owner from the database
+    owner = get_owner_by_email(email)
+
+    if not owner:
+        abort(404, description="Owner not found")
+
+    # Step 2: Authenticate against external API
+    is_authenticated = authenticate_user(email, password)
+
+    if not is_authenticated:
+        abort(401, description="Authentication failed")
+
+    # Step 3: Return owner information and role
+    return jsonify({
+        'owner_name': owner.owner_name,
+        'email': owner.email,
+        'role': owner.role
+    })
+

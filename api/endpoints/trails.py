@@ -46,12 +46,31 @@ from auth import get_owner_by_email, authenticate_user
     # Update
     # Delete
         # Can only delete trail if admin/author of trail
-# Need to check user is admin before anything
-    # via auth.py
-        # Check if user is admin
-        # Check if user exists
-        # Check if user is authenticated
-        # Check if user is authorised to perform action
+
+# Authentication -> Basic Auth + Swagger
+    # Steps
+        # Client sends a request with Authorization header containing username + password
+        # server extracts and decodes the username and password
+        # server checks if the user exists in the database
+        # server checks if the user is an admin
+
+        # Delete Trail
+            # Check if user is an admin
+            # Check if user is the owner of the trail
+                # Delete the trail
+
+    # Sample Data
+            # Databse Data
+            # owner_name: "Grace Hopper", email: "grace@plymouth.ac.uk", role: "admin"
+            # owner_name: "Tim Berners-Lee", email: "tim@plymouth.ac.uk, role; "user"
+
+        # API Data -> No role assigned
+        # URL -> https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users
+        
+            # username: "Grace Hopper", email: "grace@plymouth.ac.uk", password: "ISAD123!"
+            # username: "Tim Berners-Lee", email: "tim@plymouth.ac.uk", password: "COMP2001!"
+            # username: "Ada Lovelace", email: "ada@plymouth.ac.uk", password: "insecurePassword"
+
 
 def read_all():
     # Query all trails
@@ -89,11 +108,6 @@ def read_one(trail_id):
         ],
         "features": trail_features
     })
-
-
-
-from flask import request, jsonify, abort
-from models import Trail, TrailPoints, TrailFeature, db, trail_schema
 
 def create():
     print("Called Create function of trail")
@@ -144,10 +158,6 @@ def create():
         db.session.rollback()  # Rollback any changes if an error occurs
         print(f"Error occurred during trail creation: {e}")
         abort(500, "An error occurred while creating the trail")
-
-
-
-
 
 def update(trail_id):
     print("Called Update function of trail")
@@ -214,7 +224,6 @@ def update(trail_id):
         ]
     }), 200
 
-
 def delete(trail_id):
     print("Called Delete function of trail")
 
@@ -235,28 +244,3 @@ def delete(trail_id):
 
     # Step 5: Return a success message
     return make_response(f"Trail with ID {trail_id} successfully deleted", 204)
-
-def check_owner():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-
-    # Step 1: Retrieve owner from the database
-    owner = get_owner_by_email(email)
-
-    if not owner:
-        abort(404, description="Owner not found")
-
-    # Step 2: Authenticate against external API
-    is_authenticated = authenticate_user(email, password)
-
-    if not is_authenticated:
-        abort(401, description="Authentication failed")
-
-    # Step 3: Return owner information and role
-    return jsonify({
-        'owner_name': owner.owner_name,
-        'email': owner.email,
-        'role': owner.role
-    })
-

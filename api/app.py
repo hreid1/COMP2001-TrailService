@@ -1,7 +1,5 @@
 from flask import Flask, render_template, jsonify, request, abort
 import config
-from auth import get_owner_by_email, authenticate_user
-
 
 app = config.connex_app
 app.add_api(config.basedir / "swagger.yml")

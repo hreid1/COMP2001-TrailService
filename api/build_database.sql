@@ -51,7 +51,7 @@ create table CW2.owners (
     owner_id int primary key identity(1,1),
     owner_name varchar(50) not null,
     email varchar(100) not null unique,
-    role varchar(50) not null check (role in ('Admin', 'User'))
+    role varchar(50) not null check (role in ('admin', 'user'))
 );
 GO
 
@@ -205,9 +205,9 @@ GO
 
 -- Insert sample data for owners
 INSERT INTO CW2.owners (owner_name, email, role) VALUES
-('Grace Hopper', 'grace@plymouth.ac.uk', 'ADMIN'), -- Admin
-('Tim Berners-Lee', 'tim@plymouth.ac.uk', 'USER'), -- User
-('Ada Lovelace', 'ada@plymouth.ac.uk', 'USER'); -- User
+('Grace Hopper', 'grace@plymouth.ac.uk', 'admin'), -- Admin
+('Tim Berners-Lee', 'tim@plymouth.ac.uk', 'user'), -- User
+('Ada Lovelace', 'ada@plymouth.ac.uk', 'user'); -- User
 GO
 
 -- Insert sample data for route types

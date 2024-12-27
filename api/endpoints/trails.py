@@ -1,8 +1,7 @@
-from flask import abort, make_response, jsonify, request
-
+from flask import abort, make_response, jsonify, request, Request
+import requests
 from config import db
 from models import Trail, trail_schema, trails_schema, location_point_schema, LocationPoint, Feature, TrailFeature, TrailPoints, Feature, RouteType, Owner, trail_points_schema, trail_feature_schema
-from auth import get_owner_by_email, authenticate_user
 
 # Trail
     # trail_id
@@ -48,16 +47,11 @@ from auth import get_owner_by_email, authenticate_user
         # Can only delete trail if admin/author of trail
 
 # Authentication -> Basic Auth + Swagger
+    # Rules
+        # Admins can perform all CRUD actions
+        # Users can only read trails
     # Steps
-        # Client sends a request with Authorization header containing username + password
-        # server extracts and decodes the username and password
-        # server checks if the user exists in the database
-        # server checks if the user is an admin
-
-        # Delete Trail
-            # Check if user is an admin
-            # Check if user is the owner of the trail
-                # Delete the trail
+        # 
 
     # Sample Data
             # Databse Data
@@ -66,11 +60,16 @@ from auth import get_owner_by_email, authenticate_user
 
         # API Data -> No role assigned
         # URL -> https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users
-        
             # username: "Grace Hopper", email: "grace@plymouth.ac.uk", password: "ISAD123!"
             # username: "Tim Berners-Lee", email: "tim@plymouth.ac.uk", password: "COMP2001!"
             # username: "Ada Lovelace", email: "ada@plymouth.ac.uk", password: "insecurePassword"
 
+                # API integration basically to assess that the user is real
+
+                # auth.py -> authenticate_user(email, password)
+                    # Matches email and password to the API
+
+auth_url = "https://web.socem.plymouth.ac.uk/COMP2001/auth/api/users"
 
 def read_all():
     # Query all trails
@@ -227,7 +226,7 @@ def update(trail_id):
 def delete(trail_id):
     print("Called Delete function of trail")
 
-    # only admins or owners of the trail can delete the trail
+    user = check_admin()
 
     # Step 2: Fetch the trail by ID
     existing_trail = Trail.query.get(trail_id)
@@ -244,3 +243,55 @@ def delete(trail_id):
 
     # Step 5: Return a success message
     return make_response(f"Trail with ID {trail_id} successfully deleted", 204)
+
+def check_auth():
+    if not user_exists(request):
+        abort(401, "Invalid credentials")
+        
+    user = get_user(request)
+    if user is None:
+        abort(401, "User not found in database")
+        
+    return user
+
+def check_admin():
+    user = check_auth()
+    if not is_admin(user):
+        abort(403, "Admin access required")
+    return user
+
+def check_owner_or_admin(trail_id):
+    user = check_auth()
+    
+    trail = Trail.query.get(trail_id)
+    if trail is None:
+        abort(404, f"Trail with ID {trail_id} not found")
+        
+    if not is_admin(user) and trail.owner_id != user.owner_id:
+        abort(403, "Not authorized to modify this trail")
+        
+    return user
+
+def user_exists(req: Request) -> bool:
+    email = req.headers.get("email")
+    password = req.headers.get("password")
+
+    if not email or not password:
+        return False
+    
+    try:
+        response = requests.post(
+            auth_url, 
+            json={"email": email, "password": password},
+            timeout=5
+        )
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+def get_user(req: Request) -> Owner:
+    email = req.headers.get("email")
+    return Owner.query.filter(Owner.email == email).one_or_none()
+
+def is_admin(user: Owner) -> bool:
+    return user and user.role == "admin"

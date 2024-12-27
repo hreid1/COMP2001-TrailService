@@ -93,12 +93,6 @@ components:
       required:
         - feature_id
   
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
-      description: "Basic Authentication with email and password"
-
   parameters:
     trail_id:
       name: "trail_id"
@@ -107,6 +101,20 @@ components:
       schema:
         type: "integer"
       description: "ID of the trail to return"
+    email:
+      name: "email"
+      in: "header"
+      required: false
+      description: "Email of the user"
+      schema: 
+        type: "string"
+    password:
+      name: "password"
+      in: "header"
+      required: false
+      description: "Password of the user"
+      schema: 
+        type: "string"
 
 paths:
   "/trails":
@@ -216,9 +224,12 @@ paths:
       summary: "Delete a trail"
       description: "Deletes a trail by ID."
       parameters:
-        - $ref: "#/components/parameters/trail_id"
-      security:
-        - BasicAuth: []
+        - schema:
+          $ref: "#/components/parameters/trail_id"
+        - schema:
+          $ref: "#/components/parameters/email"
+        - schema:
+          $ref: "#/components/parameters/password"
       responses:
         "204":
           description: "Trail deleted"

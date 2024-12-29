@@ -146,6 +146,14 @@ GO
         -- Length: 10.00 miles
         -- Elevation Gain: 200.00 metres
         -- Description: A walk along the waterfront with views of the sea
+    -- Name: Dartmoor Explorer
+        -- Owner: Ada Lovelace
+        -- Route Type: Point to Point
+        -- Difficulty: Hard
+        -- Location: Dartmoor National Park
+        -- Length: 15.00 miles
+        -- Elevation Gain: 500.00 metres
+        -- Description: A challenging hike through Dartmoor with stunning views
 
 -- Features
     -- Waterfall
@@ -155,6 +163,7 @@ GO
 -- TrailFeatures
     -- Plymbridge Circular: Waterfall
     -- Plymouth Waterfront: Scenic View
+    -- Dartmoor Explorer: Wildlife
 
 -- Location Points
     -- Point A: -123.3656, 48.4284
@@ -191,25 +200,12 @@ GO
         -- Point H
         -- Point I
         -- Point J
-
--- Trail Points
-    -- Plymbridge Circular
+    -- Dartmoor Explorer
         -- Point A
         -- Point B
         -- Point C
         -- Point D
         -- Point E
-        -- Point K
-        -- Point L
-        -- Point M
-        -- Point N
-        -- Point O
-    -- Plymouth Waterfront
-        -- Point F
-        -- Point G
-        -- Point H
-        -- Point I
-        -- Point J
 
 -- Insert sample data for owners
 INSERT INTO CW2.owners (owner_name, email, role) VALUES
@@ -228,7 +224,8 @@ GO
 -- Insert sample data for trails
 INSERT INTO CW2.trails (owner_id, route_id, name, difficulty, location, length, elevation_gain, description) VALUES
 (1, 1, 'Plymbridge Circular', 'Easy', 'Plymbridge Woods', 5.00, 100.00, 'A circular walk around Plymbridge Woods'),
-(2, 2, 'Plymouth Waterfront', 'Moderate', 'Plymouth Hoe', 10.00, 200.00, 'A walk along the waterfront with views of the sea');
+(2, 2, 'Plymouth Waterfront', 'Moderate', 'Plymouth Hoe', 10.00, 200.00, 'A walk along the waterfront with views of the sea'),
+(3, 3, 'Dartmoor Explorer', 'Hard', 'Dartmoor National Park', 15.00, 500.00, 'A challenging hike through Dartmoor with stunning views');
 GO
 
 -- Insert sample data for features
@@ -241,7 +238,8 @@ GO
 -- Insert sample data for trail_features (many-to-many relation between trails and features)
 INSERT INTO CW2.trail_features (trail_id, feature_id) VALUES
 (1, 1), -- Plymbridge Circular has Waterfall
-(2, 2); -- Plymouth Waterfront has Scenic View
+(2, 2), -- Plymouth Waterfront has Scenic View
+(3, 3); -- Dartmoor Explorer has Wildlife
 GO
 
 -- Insert sample data for location_points (coordinates for the points)
@@ -263,6 +261,7 @@ INSERT INTO CW2.location_point (longitude, latitude, description) VALUES
 (-123.3670, 48.4298, 'Point O');
 GO
 
+
 -- Insert sample data for trail_points (many-to-many relation between trails and location points)
 INSERT INTO CW2.trail_points (trail_id, location_point_id, sequence_number) VALUES
 (1, 1, 1),
@@ -279,5 +278,10 @@ INSERT INTO CW2.trail_points (trail_id, location_point_id, sequence_number) VALU
 (2, 7, 2),
 (2, 8, 3),
 (2, 9, 4),
-(2, 10, 5);
+(2, 10, 5),
+(3, 1, 1),
+(3, 2, 2),
+(3, 3, 3),
+(3, 4, 4),
+(3, 5, 5);
 GO

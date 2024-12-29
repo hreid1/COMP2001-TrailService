@@ -1,17 +1,15 @@
-# config.py
-
 import pathlib
 import connexion
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import urllib.parse
 
-basedir = pathlib.Path(__file__).parent.resolve()
-connex_app = connexion.App(__name__, specification_dir=basedir)
+basedir = pathlib.Path(__file__).parent.resolve() 
+connex_app = connexion.App(__name__, specification_dir=basedir) 
 
-LOCAL = True
+LOCAL = True # Switch for switching between local and remote database
 
-server ="localhost" if LOCAL else "dist-6-505.uopnet.plymouth.ac.uk"
+server ="localhost" if LOCAL else "dist-6-505.uopnet.plymouth.ac.uk" 
 database = "master" if LOCAL else "COMP2001_HReid"
 username = "SA" if LOCAL else "HReid"
 driver = "ODBC+Driver+17+for+SQL+Server"

@@ -3,7 +3,7 @@ import pyodbc
 conn_str = (
     'DRIVER={ODBC Driver 17 for SQL Server};'
     'SERVER=localhost;'  # Corrected server name
-    'DATABASE=Test;' # CHANGE LATER 
+    'DATABASE=master;' 
     'UID=SA;'
     'PWD=C0mp2001!;'
     'Connection Timeout=30;'

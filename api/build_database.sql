@@ -47,6 +47,7 @@ GO
 create schema CW2;
 GO
 
+-- Table to store information about owners with roles (admin or user)
 create table CW2.owners (
     owner_id int primary key identity(1,1),
     owner_name varchar(50) not null,
@@ -55,12 +56,14 @@ create table CW2.owners (
 );
 GO
 
+-- Table to store different types of routes
 create table CW2.route_type (
     route_id int primary key identity(1,1),
     route_type varchar(50) not null
 );
 GO
 
+-- Table to store information about trails, linking to owners and route types
 create table CW2.trails (
     trail_id int primary key identity(1,1),
     owner_id int not null references CW2.owners(owner_id),
@@ -74,17 +77,20 @@ create table CW2.trails (
 );
 GO
 
+-- Table to store features that can be associated with trails
 create table CW2.feature (
     feature_id int primary key identity(1,1),
     feature_name varchar(255) not null
 );
 
+-- Table to associate features with trails (many-to-many relationship)
 create table CW2.trail_features (
     trail_id int not null references CW2.trails(trail_id),
     feature_id int not null references CW2.feature(feature_id),
     primary key (trail_id, feature_id)
 );
 
+-- Table to store geographical points with longitude, latitude, and description
 create table CW2.location_point (
     location_point_id int primary key identity(1,1),
     longitude decimal(9,6) not null,
@@ -92,6 +98,7 @@ create table CW2.location_point (
     description text not null
 );
 
+-- Table to associate trails with location points in a specific sequence
 create table CW2.trail_points (
     trail_id int not null references CW2.trails(trail_id),
     location_point_id int not null references CW2.location_point(location_point_id),
@@ -99,6 +106,7 @@ create table CW2.trail_points (
     primary key (trail_id, location_point_id)
 );
 GO
+
 
 -- Insert data
 

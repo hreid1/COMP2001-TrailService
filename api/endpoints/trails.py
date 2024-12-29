@@ -21,7 +21,7 @@ from models import Trail, trail_schema, trails_schema, location_point_schema, Lo
     # Create
     # Read
         # Read one
-            # Need to return associated RouteType, Owner
+            # Need to return associated RouteType, Owner, Feature
                 # Via JOIN TABLES
             # Tables
                 # Owner (owners)
@@ -32,6 +32,12 @@ from models import Trail, trail_schema, trails_schema, location_point_schema, Lo
                 # RouteType (route_type)
                     # route_type_id
                     # route_type
+                # TrailFeature (trail_features) JOIN TABLE
+                    # trail_id
+                    # feature_id
+                # Feature (features)
+                    # feature_id
+                    # feature_name
                 # TrailPoints (trail_points) JOIN TABLE
                     # trail_id
                     # location_point_id
@@ -51,7 +57,7 @@ from models import Trail, trail_schema, trails_schema, location_point_schema, Lo
         # Admins can perform all CRUD actions
         # Users can only read trails
     # Steps
-        # 
+        # Check auth
 
     # Sample Data
             # Databse Data
@@ -226,7 +232,7 @@ def update(trail_id):
 def delete(trail_id):
     print("Called Delete function of trail")
 
-    user = check_admin()
+    user = check_owner_or_admin(trail_id)
 
     # Step 2: Fetch the trail by ID
     existing_trail = Trail.query.get(trail_id)

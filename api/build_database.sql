@@ -107,7 +107,6 @@ create table CW2.trail_points (
 );
 GO
 
-
 -- Insert data
 
 -- Owners

@@ -29,6 +29,20 @@ from models import TrailFeature, Trail, Feature
         # feature_id
         # feature_name
 
+# Sample Data
+    # Trail
+        # 1, "Plymbridge Circular"
+        # 2, "Plymouth Waterfront"
+        # 3, "Dartmoor Explorer"
+    # Feature
+        # 1, "Waterfall"
+        # 2, "Scenic View"
+        # 3, "Wildlife"
+    # Trail Features
+        # 1, 1
+        # 2, 2
+        # 3, 2
+
 def create(trail_id, feature_id):
    
     # Check if the trail and feature exist

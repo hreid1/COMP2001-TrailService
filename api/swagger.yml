@@ -198,3 +198,4 @@ paths:
           description: "Trail deleted"
         "404":
           description: "Not Found - Trail with the given ID doesn't exist"
+

@@ -61,15 +61,6 @@ components:
               feature_id:
                 type: integer
           description: "List of features associated with the trail"
-      required:
-        - name
-        - difficulty
-        - location
-        - length
-        - elevation_gain
-        - description
-        - owner_id
-        - route_id
 
     TrailPoints:
       type: object
@@ -104,14 +95,14 @@ components:
     email:
       name: "email"
       in: "header"
-      required: false
+      required: true
       description: "Email of the user"
       schema: 
         type: "string"
     password:
       name: "password"
       in: "header"
-      required: false
+      required: true
       description: "Password of the user"
       schema: 
         type: "string"
@@ -126,18 +117,18 @@ paths:
       responses:
         "200":
           description: "A list of trails"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Trail"
     post:
       tags: ["trails"]
       operationId: "endpoints.trails.create"
       summary: "Create a new trail"
       description: "Creates a new trail, optionally with trail points and features"
+      parameters:
+        - schema:
+          $ref: "#/components/parameters/email"
+        - schema:
+          $ref: "#/components/parameters/password"
       requestBody:
+        description: "Trail object to be created"
         required: true
         content:
           application/json:
@@ -145,36 +136,7 @@ paths:
               $ref: "#/components/schemas/Trail"
       responses:
         "201":
-          description: "Trail created successfully"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Trail created successfully"
-                  trail:
-                    $ref: "#/components/schemas/Trail"
-        "400":
-          description: "Invalid input"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Invalid trail data"
-        "500":
-          description: "Server error"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          description: "Trail created"
 
   "/trails/{trail_id}":
     get:
@@ -183,7 +145,8 @@ paths:
       summary: "Get a trail by ID"
       description: "Returns a trail by ID"
       parameters:
-        - $ref: "#/components/parameters/trail_id"
+        - schema:
+          $ref: "#/components/parameters/trail_id"
       responses:
         "200":
           description: "A trail"
@@ -199,12 +162,12 @@ paths:
       summary: "Update a trail"
       description: "Updates a trail by ID"
       parameters:
-        - name: "trail_id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-          description: "ID of the trail to update"
+        - schema:
+          $ref: "#/components/parameters/trail_id"
+        - schema:
+          $ref: "#/components/parameters/email"
+        - schema:
+          $ref: "#/components/parameters/password"
       requestBody:
         required: true
         content:

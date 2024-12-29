@@ -316,13 +316,14 @@ def delete(trail_id):
         # Check it exists in the database
             # Check if the user is an admin
 
-def authenticate_user(email, password, auth_url):
-    credentials = {'email': email, 'password': password}
-    try:
-        response = requests.post(auth_url, json=credentials)
-        if response.status_code == 200:
+# Authenticate the user against the API
+def authenticate_user(email, password, auth_url): 
+    credentials = {'email': email, 'password': password} 
+    try: 
+        response = requests.post(auth_url, json=credentials)   
+        if response.status_code == 200: 
             try:
-                json_response = response.json()
+                json_response = response.json()   
                 return {"status": "success", "data": json_response}
             except requests.JSONDecodeError:
                 return {"status": "error", "message": "Response is not valid JSON.", "response": response.text}
@@ -331,11 +332,13 @@ def authenticate_user(email, password, auth_url):
     except requests.exceptions.RequestException as e:
         return {"status": "error", "message": str(e)}
 
+# Gets the user from the Owner table in the database
 def get_user(req: Request):
     email = req.headers.get('email')
     user = Owner.query.filter(Owner.email == email).one_or_none()
     return user
 
+# Checks if the user is an admin from the database
 def is_admin(user):
     return user.role == "admin" if user else False
 

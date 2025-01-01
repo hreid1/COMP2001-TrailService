@@ -7,7 +7,7 @@ import urllib.parse
 basedir = pathlib.Path(__file__).parent.resolve() 
 connex_app = connexion.App(__name__, specification_dir=basedir) 
 
-LOCAL = False # Switch for switching between local and remote database
+LOCAL = True # Switch for switching between local and remote database
 
 server ="localhost" if LOCAL else "dist-6-505.uopnet.plymouth.ac.uk" 
 database = "master" if LOCAL else "COMP2001_HReid"

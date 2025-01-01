@@ -6,7 +6,7 @@ info:
   description: "A simple API to manage trails and owners"
   contact:
     name: "Henry Reid"
-    email: "henryreid05@gmail.com"
+    email: "henry.reid@students.plymouth.ac.uk"
     url: "https://henryreid.com"
 
 servers:
@@ -198,4 +198,5 @@ paths:
           description: "Trail deleted"
         "404":
           description: "Not Found - Trail with the given ID doesn't exist"
+
 
